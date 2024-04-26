@@ -30,4 +30,8 @@ public class QuizService {
     public Optional<Quiz> findById(int id) {
         return quizRepository.findById(id);
     }
+
+    public void delete(int id) {
+        quizRepository.delete(id);
+    }
 }

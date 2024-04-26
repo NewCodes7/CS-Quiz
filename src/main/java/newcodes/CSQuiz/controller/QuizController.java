@@ -9,9 +9,11 @@ import newcodes.CSQuiz.domain.Quiz;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
@@ -48,5 +50,14 @@ public class QuizController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(quiz.get());
         }
+    }
+
+    @DeleteMapping("/quizzes/{id}")
+    public ResponseEntity<Void> deleteQuiz(@PathVariable int id) {
+        quizService.delete(id);
+
+        // FIXME: 제대로 삭제되었는지 확인 응답 필요
+        return ResponseEntity.ok()
+                .build();
     }
 }

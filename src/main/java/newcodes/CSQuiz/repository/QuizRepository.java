@@ -9,4 +9,5 @@ public interface QuizRepository {
     Quiz save(Quiz quiz, List<AnswerDTO> answerRequest);
     List<Quiz> findAll();
     Optional<Quiz> findById(int id);
+    void delete(int id);
 }

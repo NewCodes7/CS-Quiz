@@ -91,6 +91,12 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         return result.stream().findAny();
     }
 
+    @Override
+    public void delete(int id) {
+        String sql = "DELETE FROM quizzes where quiz_id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     private RowMapper<Quiz> quizRowMapper() {
         return (rs, rowNum) -> {
             Quiz quiz = Quiz.builder()
