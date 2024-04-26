@@ -12,6 +12,4 @@ public class Answer {
     private int answerId;
     private int quizId;
     private String answerText;
-    private List<AlternativeAnswer> alternativeAnswers;
-
 }

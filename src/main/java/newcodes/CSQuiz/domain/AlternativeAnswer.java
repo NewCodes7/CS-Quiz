@@ -11,5 +11,4 @@ public class AlternativeAnswer {
     private int alternativeId;
     private int answerId;
     private String alternativeText;
-
 }

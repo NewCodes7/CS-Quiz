@@ -2,8 +2,11 @@ package newcodes.CSQuiz.repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.sql.DataSource;
+import newcodes.CSQuiz.domain.AlternativeAnswer;
+import newcodes.CSQuiz.domain.Answer;
 import newcodes.CSQuiz.domain.Difficulty;
 import newcodes.CSQuiz.domain.Quiz;
 import newcodes.CSQuiz.dto.AnswerDTO;
@@ -26,7 +29,7 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
     }
 
     @Override
-    public Quiz save(Quiz quiz, List<AnswerDTO> answerRequest) {
+    public Quiz save(Quiz quiz, Map<Answer, List<AlternativeAnswer>> answers) {
         // quiz 저장
         String quizzesSql = "INSERT INTO quizzes (category_id, question_text, difficulty, reference_url, attempt_count, correct_count, blank_sentence) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -52,22 +55,22 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         String answerSql = "INSERT INTO answers (quiz_id, answer_text) VALUES (?, ?)";
         String alternativeAnswerSql = "INSERT INTO alternative_answers (answer_id, alternative_text) VALUES (?, ?)";
 
-        for (AnswerDTO request : answerRequest) {
+        for (Answer answer : answers.keySet()) {
             jdbcTemplate.update(connection -> {
                 PreparedStatement pstmt = connection.prepareStatement(answerSql, new String[]{"answer_id"});
                 pstmt.setInt(1, quiz.getQuizId());
-                pstmt.setString(2, request.getAnswerText());
+                pstmt.setString(2, answer.getAnswerText());
                 return pstmt;
             }, keyHolder);
 
             int answerId = keyHolder.getKey().intValue();
 
             // 대안 답 저장
-            for (String alternativeAnswer : request.getAlternativeAnswers()) {
+            for (AlternativeAnswer alternativeAnswer : answers.get(answer)) {
                 jdbcTemplate.update(connection -> {
                     PreparedStatement pstmt = connection.prepareStatement(alternativeAnswerSql, new String[]{"alternative_id"});
                     pstmt.setInt(1, answerId);
-                    pstmt.setString(2, alternativeAnswer);
+                    pstmt.setString(2, alternativeAnswer.getAlternativeText());
                     return pstmt;
                 }, keyHolder);
             }
