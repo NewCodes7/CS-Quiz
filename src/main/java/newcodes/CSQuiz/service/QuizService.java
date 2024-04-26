@@ -21,4 +21,8 @@ public class QuizService {
 
         return quizRepository.save(quiz, answerRequest);
     }
+
+    public List<Quiz> findAll() {
+        return quizRepository.findAll();
+    }
 }

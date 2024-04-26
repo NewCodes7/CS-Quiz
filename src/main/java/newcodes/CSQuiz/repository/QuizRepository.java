@@ -6,4 +6,5 @@ import newcodes.CSQuiz.dto.AnswerDTO;
 
 public interface QuizRepository {
     Quiz save(Quiz quiz, List<AnswerDTO> answerRequest);
+    List<Quiz> findAll();
 }

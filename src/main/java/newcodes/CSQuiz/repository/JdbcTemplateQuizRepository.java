@@ -3,9 +3,11 @@ package newcodes.CSQuiz.repository;
 import java.sql.PreparedStatement;
 import java.util.List;
 import javax.sql.DataSource;
+import newcodes.CSQuiz.domain.Difficulty;
 import newcodes.CSQuiz.domain.Quiz;
 import newcodes.CSQuiz.dto.AnswerDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -71,5 +73,26 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         }
 
         return quiz;
+    }
+
+    @Override
+    public List<Quiz> findAll() {
+        String sql = "SELECT * FROM quizzes";
+
+        return jdbcTemplate.query(sql, quizRowMapper());
+    }
+
+    private RowMapper<Quiz> quizRowMapper() {
+        return (rs, rowNum) -> {
+            Quiz quiz = Quiz.builder()
+                    .quizId(rs.getInt("quiz_id"))
+                    .categoryId(rs.getInt("category_id"))
+                    .questionText(rs.getString("question_text"))
+                    .difficulty(rs.getString("difficulty"))
+                    .referenceUrl(rs.getString("reference_url")) // Null 가능
+                    .blankSentence(rs.getString("blank_sentence"))
+                    .build();
+            return quiz;
+        };
     }
 }
