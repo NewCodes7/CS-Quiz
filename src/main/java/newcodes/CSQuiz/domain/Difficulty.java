@@ -1,8 +1,5 @@
 package newcodes.CSQuiz.domain;
 
-import lombok.Getter;
-
-@Getter
 public enum Difficulty {
     BRONZE("브론즈"),
     SILVER("실버"),

@@ -12,7 +12,7 @@ public class Quiz {
     private int quizId;
     private int categoryId;
     private String questionText;
-    private Difficulty difficulty;
+    private String difficulty;
     private String referenceUrl;
     private String blankSentence;
 

@@ -33,7 +33,7 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
             PreparedStatement pstmt = connection.prepareStatement(quizzesSql, new String[]{"quiz_id"});
             pstmt.setInt(1, quiz.getCategoryId());
             pstmt.setString(2, quiz.getQuestionText());
-            pstmt.setString(3, quiz.getDifficulty().getValue());
+            pstmt.setString(3, quiz.getDifficulty());
             pstmt.setString(4, quiz.getReferenceUrl());
             pstmt.setInt(5, ZERO_INITIALIZER);
             pstmt.setInt(6, ZERO_INITIALIZER);
