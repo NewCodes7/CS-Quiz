@@ -2,6 +2,7 @@ package newcodes.CSQuiz.repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 import newcodes.CSQuiz.domain.Difficulty;
 import newcodes.CSQuiz.domain.Quiz;
@@ -80,6 +81,14 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         String sql = "SELECT * FROM quizzes";
 
         return jdbcTemplate.query(sql, quizRowMapper());
+    }
+
+    @Override
+    public Optional<Quiz> findById(int id) {
+        String sql = "SELECT * FROM quizzes where quiz_id = ?";
+        List<Quiz> result = jdbcTemplate.query(sql, quizRowMapper(), id);
+
+        return result.stream().findAny();
     }
 
     private RowMapper<Quiz> quizRowMapper() {

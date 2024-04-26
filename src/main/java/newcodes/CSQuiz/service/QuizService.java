@@ -1,6 +1,7 @@
 package newcodes.CSQuiz.service;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.domain.Quiz;
 import newcodes.CSQuiz.dto.AnswerDTO;
@@ -24,5 +25,9 @@ public class QuizService {
 
     public List<Quiz> findAll() {
         return quizRepository.findAll();
+    }
+
+    public Optional<Quiz> findById(int id) {
+        return quizRepository.findById(id);
     }
 }
