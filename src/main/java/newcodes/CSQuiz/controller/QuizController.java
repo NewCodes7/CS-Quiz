@@ -23,7 +23,7 @@ public class QuizController {
 
     private final QuizService quizService;
 
-    @PostMapping("/quizzes")
+    @PostMapping("/api/quizzes")
     public ResponseEntity<Quiz> addQuiz(@RequestBody QuizRequest request) {
         Quiz savedQuiz = quizService.save(request);
 
@@ -32,7 +32,7 @@ public class QuizController {
                 .body(savedQuiz);
     }
 
-    @GetMapping("/quizzes")
+    @GetMapping("/api/quizzes")
     public ResponseEntity<List<Quiz>> findAllQuizzes() {
         List<Quiz> quizzes = quizService.findAll();
 
@@ -40,7 +40,7 @@ public class QuizController {
                 .body(quizzes);
     }
 
-    @GetMapping("/quizzes/{id}")
+    @GetMapping("/api/quizzes/{id}")
     public ResponseEntity<Quiz> findQuiz(@PathVariable int id) {
         Optional<Quiz> quiz = quizService.findById(id);
 
@@ -54,7 +54,7 @@ public class QuizController {
         }
     }
 
-    @DeleteMapping("/quizzes/{id}")
+    @DeleteMapping("/api/quizzes/{id}")
     public ResponseEntity<Void> deleteQuiz(@PathVariable int id) {
         quizService.delete(id);
 
@@ -65,7 +65,7 @@ public class QuizController {
 
     // TODO: 문제, 정답 업데이트
     // FIXME: UpdateQuizRequest 이름 바꾸기 (QuizRequest와 혼동)
-    @PutMapping("/quizzes/{id}")
+    @PutMapping("/api/quizzes/{id}")
     public ResponseEntity<Quiz> updateQuiz(@PathVariable int id,
                                                  @RequestBody UpdateQuizRequest request) {
         Quiz updatedQuiz = quizService.update(id, request);
@@ -73,5 +73,4 @@ public class QuizController {
         return ResponseEntity.ok()
                 .body(updatedQuiz);
     }
-
 }
