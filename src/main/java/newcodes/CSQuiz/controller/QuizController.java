@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.dto.QuizRequest;
+import newcodes.CSQuiz.dto.UpdateQuizRequest;
 import newcodes.CSQuiz.service.QuizService;
 import newcodes.CSQuiz.domain.Quiz;
 import org.springframework.http.HttpStatus;
@@ -61,4 +62,16 @@ public class QuizController {
         return ResponseEntity.ok()
                 .build();
     }
+
+    // TODO: 문제, 정답 업데이트
+    // FIXME: UpdateQuizRequest 이름 바꾸기 (QuizRequest와 혼동)
+    @PutMapping("/quizzes/{id}")
+    public ResponseEntity<Quiz> updateQuiz(@PathVariable int id,
+                                                 @RequestBody UpdateQuizRequest request) {
+        Quiz updatedQuiz = quizService.update(id, request);
+
+        return ResponseEntity.ok()
+                .body(updatedQuiz);
+    }
+
 }

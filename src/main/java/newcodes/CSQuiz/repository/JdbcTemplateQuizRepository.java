@@ -117,6 +117,57 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         jdbcTemplate.update(sql, id);
     }
 
+    @Override
+    public Quiz update(Quiz quiz, Map<Answer, List<AlternativeAnswer>> answers) {
+        // quiz 저장
+        String quizzesSql = "INSERT INTO quizzes (category_id, question_text, difficulty, reference_url, attempt_count, correct_count, blank_sentence) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement pstmt = connection.prepareStatement(quizzesSql, new String[]{"quiz_id"});
+            pstmt.setInt(1, quiz.getCategoryId());
+            pstmt.setString(2, quiz.getQuestionText());
+            pstmt.setString(3, quiz.getDifficulty());
+            pstmt.setString(4, quiz.getReferenceUrl());
+            pstmt.setInt(5, ZERO_INITIALIZER);
+            pstmt.setInt(6, ZERO_INITIALIZER);
+            pstmt.setString(7, quiz.getBlankSentence());
+
+            return pstmt;
+        }, keyHolder);
+
+        int quizId = keyHolder.getKey().intValue();
+        quiz.setQuizId(quizId);
+
+        // answer 저장
+        String answerSql = "INSERT INTO answers (quiz_id, answer_text) VALUES (?, ?)";
+        String alternativeAnswerSql = "INSERT INTO alternative_answers (answer_id, alternative_text) VALUES (?, ?)";
+
+        for (Answer answer : answers.keySet()) {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement pstmt = connection.prepareStatement(answerSql, new String[]{"answer_id"});
+                pstmt.setInt(1, quiz.getQuizId());
+                pstmt.setString(2, answer.getAnswerText());
+                return pstmt;
+            }, keyHolder);
+
+            int answerId = keyHolder.getKey().intValue();
+
+            // 대안 답 저장
+            for (AlternativeAnswer alternativeAnswer : answers.get(answer)) {
+                jdbcTemplate.update(connection -> {
+                    PreparedStatement pstmt = connection.prepareStatement(alternativeAnswerSql, new String[]{"alternative_id"});
+                    pstmt.setInt(1, answerId);
+                    pstmt.setString(2, alternativeAnswer.getAlternativeText());
+                    return pstmt;
+                }, keyHolder);
+            }
+        }
+
+        return quiz;
+    }
+
     private RowMapper<Quiz> quizRowMapper() {
         return (rs, rowNum) -> {
             Quiz quiz = Quiz.builder()

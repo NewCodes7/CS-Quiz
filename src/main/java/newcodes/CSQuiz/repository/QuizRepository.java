@@ -14,4 +14,5 @@ public interface QuizRepository {
     Optional<Quiz> findById(int id);
     Map<Answer, List<AlternativeAnswer>> findAnswersById(int id);
     void delete(int id);
+    Quiz update(Quiz quiz, Map<Answer, List<AlternativeAnswer>> answers);
 }
