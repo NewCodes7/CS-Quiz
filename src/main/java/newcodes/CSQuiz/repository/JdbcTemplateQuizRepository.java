@@ -1,6 +1,7 @@
 package newcodes.CSQuiz.repository;
 
 import java.sql.PreparedStatement;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -95,6 +96,22 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
     }
 
     @Override
+    public Map<Answer, List<AlternativeAnswer>> findAnswersById(int quizId) {
+        String answerSql = "SELECT * FROM answers where quiz_id = ?";
+        List<Answer> result = jdbcTemplate.query(answerSql, answerRowMapper(), quizId);
+
+        String alternativeAnswerSql = "SELECT * FROM alternative_answers where answer_id = ?";
+        Map<Answer, List<AlternativeAnswer>> answers = new HashMap<>();
+        for (Answer answer : result) {
+            int answerId = answer.getAnswerId();
+            List<AlternativeAnswer> alternativeAnswers = jdbcTemplate.query(alternativeAnswerSql, alternativeAnswerRowMapper(), answerId);
+            answers.put(answer, alternativeAnswers);
+        }
+
+        return answers;
+    }
+
+    @Override
     public void delete(int id) {
         String sql = "DELETE FROM quizzes where quiz_id = ?";
         jdbcTemplate.update(sql, id);
@@ -111,6 +128,27 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
                     .blankSentence(rs.getString("blank_sentence"))
                     .build();
             return quiz;
+        };
+    }
+
+    private RowMapper<Answer> answerRowMapper() {
+        return (rs, rowNum) -> {
+            Answer answer = Answer.builder()
+                    .answerId(rs.getInt("answer_id"))
+                    .quizId(rs.getInt("quiz_id"))
+                    .answerText(rs.getString("answer_text"))
+                    .build();
+            return answer;
+        };
+    }
+
+    private RowMapper<AlternativeAnswer> alternativeAnswerRowMapper() {
+        return (rs, rowNum) -> {
+            AlternativeAnswer alternativeAnswer = AlternativeAnswer.builder()
+                    .alternativeId(rs.getInt("quiz_id"))
+                    .alternativeText(rs.getString("answer_text"))
+                    .build();
+            return alternativeAnswer;
         };
     }
 }
