@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>퀴즈 목록</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="p-5 mb-5 text-center</> bg-light">
+    <h1 class="mb-3">CS Quiz</h1>
+    <h4 class="mb-3">웹 개발자로서 필수로 알아야 할 CS 지식 퀴즈쇼!</h4>
+</div>
+
+<div class="container">
+    <button type="button" id="create-btn"
+            th:onclick="|location.href='@{/new-quiz}'|"
+            class="btn btn-secondary btn-sm mb-3">퀴즈 등록</button>
+    <div class="row-6" th:each="item : ${quizzes}">
+        <div class="card">
+            <div class="card-header" th:text="${item.quizId}">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title" th:text="${item.questionText}"></h5>
+                <p class="card-text" th:text="${item.blankSentence}"></p>
+                <p class="card-text" th:text="${item.categoryId}"></p>
+                <p class="card-text" th:text="${item.difficulty}"></p>
+                <p class="card-text" th:text="${item.blankSentence}"></p>
+                <p class="card-text" th:text="${item.attemptCount}"></p>
+                <p class="card-text" th:text="${item.correctCount}"></p>
+                <a th:href="@{/quizzes/{id}(id=${item.quizId})}" class="btn btn-primary">보러가기</a>
+            </div>
+        </div>
+        <br>
+    </div>
+
+    <button type="button" class="btn btn-secondary" onclick="location.href='/logout'">로그아웃</button>
+</div>
+
+<script src="/js/quiz.js"></script>
+</body>
