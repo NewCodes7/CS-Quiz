@@ -24,7 +24,6 @@
                 <p class="card-text" th:text="${item.blankSentence}"></p>
                 <p class="card-text" th:text="${item.categoryId}"></p>
                 <p class="card-text" th:text="${item.difficulty}"></p>
-                <p class="card-text" th:text="${item.blankSentence}"></p>
                 <p class="card-text" th:text="${item.attemptCount}"></p>
                 <p class="card-text" th:text="${item.correctCount}"></p>
                 <a th:href="@{/quizzes/{id}(id=${item.quizId})}" class="btn btn-primary">보러가기</a>

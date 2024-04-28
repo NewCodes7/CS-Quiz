@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="p-5 mb-5 text-center</> bg-light">
+    <h1 class="mb-3">CS Quiz</h1>
+    <h4 class="mb-3">웹 개발자로서 필수로 알아야 할 CS 지식 퀴즈쇼!</h4>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <article>
+                <input type="hidden" id="quiz-id" th:value="${quiz.quizId}">
+                <header class="mb-4">
+                    <h3 class="card-title" th:text="${quiz.questionText}"></h3>
+                </header>
+                <section class="mb-5">
+                    <p class="card-text" th:text="${quiz.blankSentence}"></p>
+                    <p class="card-text" th:text="${quiz.categoryId}"></p>
+                    <p class="card-text" th:text="${quiz.difficulty}"></p>
+                    <p class="card-text" th:text="${quiz.blankSentence}"></p>
+                    <p class="card-text" th:text="${quiz.attemptCount}"></p>
+                    <p class="card-text" th:text="${quiz.correctCount}"></p>
+                </section>
+                <button type="button" id="modify-btn"
+                        th:onclick="|location.href='@{/new-quiz?id={quizId}(quizId=${quiz.quizId})}'|"
+                        class="btn btn-primary btn-sm">수정</button>
+                <button type="button" id="delete-btn"
+                        class="btn btn-secondary btn-sm">삭제</button>
+            </article>
+        </div>
+    </div>
+</div>
+
+<script src="/js/article.js"></script>
+</body>

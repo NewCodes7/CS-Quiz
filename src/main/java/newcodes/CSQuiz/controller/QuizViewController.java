@@ -1,6 +1,7 @@
 package newcodes.CSQuiz.controller;
 
 import java.util.List;
+import java.util.Optional;
 import newcodes.CSQuiz.domain.Quiz;
 import newcodes.CSQuiz.service.QuizService;
 import org.springframework.stereotype.Controller;
@@ -26,14 +27,16 @@ public class QuizViewController {
 
         return "quizList";
     }
-//
-//    @GetMapping("/quizzes/{id}")
-//    public String getQuiz(@PathVariable Long id, Model model) {
-//        Article article = blogService.findById(id);
-//        model.addAttribute("article", new ArticleViewResponse(article));
-//
-//        return "article";
-//    }
+
+    @GetMapping("/quizzes/{id}")
+    public String getQuiz(@PathVariable int id, Model model) {
+        Optional<Quiz> quiz = quizService.findById(id);
+
+        // FIXME: Optional 타입 처리
+        model.addAttribute("quiz", quiz.get());
+
+        return "quiz";
+    }
 //
 //    @GetMapping("/new-article")
 //    public String newQuiz(@RequestParam(required = false) Long id, Model model) {
