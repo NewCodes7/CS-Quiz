@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequiredArgsConstructor
-public class QuizController {
+public class QuizApiController {
 
     private final QuizService quizService;
 

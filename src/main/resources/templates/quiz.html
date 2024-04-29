@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Quiz</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 </head>
 <body>
 <div class="p-5 mb-5 text-center</> bg-light">
@@ -21,21 +22,57 @@
                 </header>
                 <section class="mb-5">
                     <p class="card-text" th:text="${quiz.blankSentence}"></p>
-                    <p class="card-text" th:text="${quiz.categoryId}"></p>
-                    <p class="card-text" th:text="${quiz.difficulty}"></p>
-                    <p class="card-text" th:text="${quiz.blankSentence}"></p>
-                    <p class="card-text" th:text="${quiz.attemptCount}"></p>
-                    <p class="card-text" th:text="${quiz.correctCount}"></p>
+                    <p class="card-text" th:switch="${quiz.categoryId}">
+                        <span th:case="1">유형: 운영체제</span>
+                        <span th:case="2">유형: 네트워크</span>
+                        <span th:case="3">유형: 데이터베이스</span>
+                        <span th:case="4">유형: 자료구조</span>
+                        <span th:case="5">유형: 알고리즘</span>
+                        <span th:case="*" th:text="''">Unknown</span>
+                    </p>
+                    <p class="card-text" th:text="'난이도: ' + ${quiz.difficulty}"></p>
+                    <p class="card-text" th:if="${quiz.attemptCount != 0}" th:text="'정답률: ' + ${#numbers.formatDecimal((quiz.correctCount / quiz.attemptCount * 100), 2)} + '%'"></p>
+                    <p class="card-text" th:if="${quiz.attemptCount == 0}">아직 푼 사람이 없습니다!</p>
                 </section>
-                <button type="button" id="modify-btn"
-                        th:onclick="|location.href='@{/new-quiz?id={quizId}(quizId=${quiz.quizId})}'|"
-                        class="btn btn-primary btn-sm">수정</button>
-                <button type="button" id="delete-btn"
-                        class="btn btn-secondary btn-sm">삭제</button>
+                <form id="answerForm" th:action="@{'/quizzes/${quiz.quizId}'}" method="POST" onsubmit="submitForm(event)">
+                    <input type="hidden" name="quizId" th:value="${quiz.quizId}" />
+                    <div th:each="count : ${#numbers.sequence(0, quiz.answerCounts - 1)}">
+                        <input type="text" th:name="'userAnswers[' + ${count} + ']'" th:placeholder="'제' + ${count} + '번째 정답을 입력하세요!'" />
+                    </div>
+                    <button type="submit">제출</button>
+                </form>
+                <div id="answerResult" class="card">
+                    <div class="card-header">결과</div>
+                    <div class="card-body" th:if="${answerResponse != null}" th:text="${answerResponse.isAllCorrect}"></div>
+                </div>
             </article>
         </div>
     </div>
 </div>
 
-<script src="/js/article.js"></script>
+
+<script>
+    function submitForm(event) {
+        event.preventDefault(); // 기본 동작 방지
+        const formData = new FormData(event.target); // 이벤트 타겟의 폼 데이터 가져오기
+
+        var url = "/quizzes/" + formData.get('quizId'); // 퀴즈 ID 가져오기
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: formData,
+            processData: false, // 데이터 처리 방지
+            contentType: false, // 콘텐츠 타입 false로 설정
+        })
+        .done(function (fragment) {
+            $('#answerResult').replaceWith(fragment);
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            // 오류가 발생한 경우 오류 메시지를 콘솔에 출력
+            console.error("AJAX Error:", textStatus, errorThrown);
+        });
+    }
+</script>
 </body>
+</html>

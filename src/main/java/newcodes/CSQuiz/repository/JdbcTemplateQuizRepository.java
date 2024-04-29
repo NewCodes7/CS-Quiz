@@ -196,8 +196,9 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
     private RowMapper<AlternativeAnswer> alternativeAnswerRowMapper() {
         return (rs, rowNum) -> {
             AlternativeAnswer alternativeAnswer = AlternativeAnswer.builder()
-                    .alternativeId(rs.getInt("quiz_id"))
-                    .alternativeText(rs.getString("answer_text"))
+                    .alternativeId(rs.getInt("alternative_id"))
+                    .alternativeText(rs.getString("alternative_text"))
+                    .answerId(rs.getInt("answer_id"))
                     .build();
             return alternativeAnswer;
         };

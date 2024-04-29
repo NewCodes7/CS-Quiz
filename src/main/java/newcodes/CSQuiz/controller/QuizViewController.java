@@ -1,15 +1,13 @@
 package newcodes.CSQuiz.controller;
 
 import java.util.List;
-import java.util.Optional;
 import newcodes.CSQuiz.domain.Quiz;
 import newcodes.CSQuiz.service.QuizService;
-import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class QuizViewController {
@@ -30,10 +28,12 @@ public class QuizViewController {
 
     @GetMapping("/quizzes/{id}")
     public String getQuiz(@PathVariable int id, Model model) {
-        Optional<Quiz> quiz = quizService.findById(id);
-
         // FIXME: Optional 타입 처리
-        model.addAttribute("quiz", quiz.get());
+        int answerCounts = quizService.findAnswersById(id).size(); // 여기서 문제 생김!!
+        Quiz quiz = quizService.findById(id).get();
+
+        quiz.setAnswerCounts(answerCounts);
+        model.addAttribute("quiz", quiz);
 
         return "quiz";
     }

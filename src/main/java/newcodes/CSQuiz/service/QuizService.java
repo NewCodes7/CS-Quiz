@@ -46,6 +46,10 @@ public class QuizService {
         return quizRepository.findById(id);
     }
 
+    public Map<Answer, List<AlternativeAnswer>> findAnswersById(int id) {
+        return quizRepository.findAnswersById(id);
+    }
+
     public void delete(int id) {
         quizRepository.delete(id);
     }

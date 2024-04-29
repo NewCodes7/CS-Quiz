@@ -21,11 +21,17 @@
             </div>
             <div class="card-body">
                 <h5 class="card-title" th:text="${item.questionText}"></h5>
-                <p class="card-text" th:text="${item.blankSentence}"></p>
-                <p class="card-text" th:text="${item.categoryId}"></p>
-                <p class="card-text" th:text="${item.difficulty}"></p>
-                <p class="card-text" th:text="${item.attemptCount}"></p>
-                <p class="card-text" th:text="${item.correctCount}"></p>
+                <p class="card-text" th:switch="${item.categoryId}">
+                    <span th:case="1">유형: 운영체제</span>
+                    <span th:case="2">유형: 네트워크</span>
+                    <span th:case="3">유형: 데이터베이스</span>
+                    <span th:case="4">유형: 자료구조</span>
+                    <span th:case="5">유형: 알고리즘</span>
+                    <span th:case="*" th:text="''">Unknown</span>
+                </p>
+                <p class="card-text" th:text="'난이도: ' + ${item.difficulty}"></p>
+                <p class="card-text" th:if="${item.attemptCount != 0}" th:text="'정답률: ' + ${#numbers.formatDecimal((item.correctCount / item.attemptCount * 100), 2)} + '%'"></p>
+                <p class="card-text" th:if="${item.attemptCount == 0}">아직 푼 사람이 없습니다!</p>
                 <a th:href="@{/quizzes/{id}(id=${item.quizId})}" class="btn btn-primary">보러가기</a>
             </div>
         </div>
