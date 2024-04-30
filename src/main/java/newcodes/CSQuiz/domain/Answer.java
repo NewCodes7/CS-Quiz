@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class Answer {
-    private int answerId;
-    private int quizId;
+    private Integer answerId;
+    private Integer quizId;
     private String answerText;
 }

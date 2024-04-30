@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class AlternativeAnswer {
-    private int alternativeId;
-    private int answerId;
+    private Integer alternativeId;
+    private Integer answerId;
     private String alternativeText;
 }

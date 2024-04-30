@@ -9,8 +9,8 @@ import lombok.Setter;
 @Builder
 public class Quiz {
 
-    private int quizId;
-    private int categoryId;
+    private Integer quizId;
+    private Integer categoryId;
     private String questionText;
     private String difficulty;
     private String referenceUrl;

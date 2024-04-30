@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class QuizViewController {
@@ -37,16 +38,16 @@ public class QuizViewController {
 
         return "quiz";
     }
-//
-//    @GetMapping("/new-article")
-//    public String newQuiz(@RequestParam(required = false) Long id, Model model) {
-//        if (id == null) {
-//            model.addAttribute("article", new ArticleViewResponse());
-//        } else {
-//            Article article = blogService.findById(id);
-//            model.addAttribute("article", new ArticleViewResponse(article));
-//        }
-//
-//        return "newArticle";
-//    }
+
+    @GetMapping("/new-quiz")
+    public String newQuiz(@RequestParam(required = false) Integer id, Model model) {
+        if (id == null) {
+            model.addAttribute("quiz", Quiz.builder().build());
+        } else {
+            Quiz quiz = quizService.findById(id).get(); // FIXME: Optional 예외 처리
+            model.addAttribute("quiz", quiz);
+        }
+
+        return "newQuiz";
+    }
 }
