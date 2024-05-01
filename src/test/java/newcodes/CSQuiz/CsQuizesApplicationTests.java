@@ -1,10 +1,10 @@
-package newcodes.CSQuizes;
+package newcodes.CSQuiz;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CsQuizesApplicationTests {
+class CsQuizApplicationTests {
 
 	@Test
 	void contextLoads() {
