@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
+import lombok.Builder;
 
 import static java.util.Collections.emptyMap;
 
@@ -20,6 +21,7 @@ public class JwtFactory {
 
     private Map<String, Object> claims = emptyMap();
 
+    @Builder
     public JwtFactory(String subject, Date issuedAt, Date expiration,
                       Map<String, Object> claims) {
         this.subject = subject != null ? subject : this.subject;

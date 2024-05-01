@@ -32,6 +32,19 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> findById(Integer id) {
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+        return jdbcTemplate.query(sql, new Object[]{id}, (rs, rowNum) -> {
+            User user = User.builder()
+                    .password_hashed(rs.getString("password_hashed"))
+                    .email(rs.getString("email"))
+                    .username(rs.getString("username"))
+                    .build();
+            return user;
+        }).stream().findFirst();
+    }
+
+    @Override
     public User save(User user) {
         String sql = "INSERT INTO users(email, password_hashed, username, registration_date) VALUES(?, ?, ?, NOW())";
         KeyHolder keyHolder = new GeneratedKeyHolder();
