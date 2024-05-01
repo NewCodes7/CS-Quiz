@@ -3,22 +3,23 @@ package newcodes.CSQuiz.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.domain.AlternativeAnswer;
 import newcodes.CSQuiz.domain.Answer;
 import newcodes.CSQuiz.dto.AnswerRequest;
 import newcodes.CSQuiz.dto.AnswerResponse;
-import newcodes.CSQuiz.repository.AnswerRepository;
+import newcodes.CSQuiz.domain.Submission;
+import newcodes.CSQuiz.dto.SubmissionDTO;
 import newcodes.CSQuiz.repository.QuizRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import newcodes.CSQuiz.repository.SubmissionRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 @RequiredArgsConstructor
 public class AnswerService {
+
     private final QuizRepository quizRepository;
+    private final SubmissionRepository submissionRepository;
 
     public AnswerResponse check(AnswerRequest request) {
         // FIXME: request에서 user가 답을 입력하지 않은 경우 예외처리
@@ -61,8 +62,12 @@ public class AnswerService {
         }
 
         answerResponse.setIsCorrect(isCorrects);
-        answerResponse.setAllCorrect(isAllCorrect);
+        answerResponse.setIsAllCorrect(isAllCorrect);
 
         return answerResponse;
+    }
+
+    public Submission save(SubmissionDTO submissionDTO) {
+        return submissionRepository.save(submissionDTO.toEntity());
     }
 }

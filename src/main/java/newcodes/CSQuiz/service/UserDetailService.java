@@ -1,8 +1,6 @@
 package newcodes.CSQuiz.service;
 
 import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.domain.User;
 import newcodes.CSQuiz.dto.CustomUserDetails;
 import newcodes.CSQuiz.repository.UserRepository;
@@ -30,9 +28,6 @@ public class UserDetailService implements UserDetailsService {
         if (user.getPassword_hashed() == null) {
             throw new IllegalArgumentException("Password cannot be null");
         }
-
-        System.out.println(user.getEmail());
-        System.out.println(user.getPassword_hashed());
 
         // 사용자 정보를 UserDetails 객체로 변환하여 반환
         return new CustomUserDetails(user);

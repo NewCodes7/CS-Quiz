@@ -26,6 +26,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
                     .password_hashed(rs.getString("password_hashed"))
                     .email(rs.getString("email"))
                     .username(rs.getString("username"))
+                    .user_id(rs.getInt("user_id"))
                     .build();
             return user;
         }).stream().findFirst();

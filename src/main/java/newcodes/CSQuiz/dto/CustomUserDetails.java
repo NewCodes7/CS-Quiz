@@ -31,6 +31,10 @@ public class CustomUserDetails implements UserDetails {
         return user.getUsername();
     }
 
+    public Integer getUserId() {
+        return user.getUser_id();
+    }
+
     // 아래의 메서드들은 사용하지 않는다면 기본 구현인 빈 메서드로 남겨둘 수 있습니다.
     // 하지만 필요에 따라 추가적인 로직을 구현할 수도 있습니다.
 
