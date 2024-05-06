@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.domain.Quiz;
 import newcodes.CSQuiz.dto.CustomUserDetails;
+import newcodes.CSQuiz.dto.Paging;
 import newcodes.CSQuiz.dto.QuizViewDTO;
 import newcodes.CSQuiz.service.QuizService;
 import newcodes.CSQuiz.service.SubmissionService;
@@ -25,22 +26,23 @@ public class QuizViewController {
 
     @GetMapping("/quizzes")
     public String getQuizzes(Model model,
-                             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        List<Quiz> quizzesTemp = quizService.findAll();
+                             @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                             @RequestParam(defaultValue = "1") int pageNumber,
+                             @RequestParam(defaultValue = "10") int pageSize) {
+        List<QuizViewDTO> quizzes = quizService.findQuizzes(pageNumber, pageSize);
+        int totalPages = quizService.findAll().size(); // FIXME: 더 효율적으로 리팩토링 필요
 
-        // userId로 submission correct 정보 가져오기
-        List<Boolean> userSubmissions = new ArrayList<>();
-
-        List<QuizViewDTO> quizzes = new ArrayList<>();
-        for (Quiz quiz : quizzesTemp) {
-            QuizViewDTO quizViewDTO = new QuizViewDTO(quiz);
+        for (QuizViewDTO quiz : quizzes) {
             Integer userId = customUserDetails.getUserId();
             Boolean isSolved = submissionService.findById(userId, quiz.getQuizId());
-            quizViewDTO.setIsCorrect(isSolved);
-            quizzes.add(quizViewDTO);
+            quiz.setIsCorrect(isSolved);
         }
 
         model.addAttribute("quizzes", quizzes);
+
+        // paging 객체를 따로 둬서 페이지관리자 따로 두기
+        Paging paging = new Paging(pageNumber, (int) Math.ceil((double) totalPages / pageSize));
+        model.addAttribute("paging", paging);
 
         return "quizList";
     }

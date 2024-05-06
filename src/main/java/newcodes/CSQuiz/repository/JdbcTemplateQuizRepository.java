@@ -11,6 +11,7 @@ import newcodes.CSQuiz.domain.Answer;
 import newcodes.CSQuiz.domain.Difficulty;
 import newcodes.CSQuiz.domain.Quiz;
 import newcodes.CSQuiz.dto.AnswerDTO;
+import newcodes.CSQuiz.dto.QuizViewDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -78,6 +79,14 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         }
 
         return quiz;
+    }
+
+    @Override
+    public List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
+        String sql = "SELECT * FROM quizzes LIMIT ?, ?";
+
+        return jdbcTemplate.query(sql, new Object[]{offset, pageSize}, quizDtoRowMapper());
     }
 
     @Override
@@ -179,6 +188,20 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
                     .blankSentence(rs.getString("blank_sentence"))
                     .build();
             return quiz;
+        };
+    }
+
+    private RowMapper<QuizViewDTO> quizDtoRowMapper() {
+        return (rs, rowNum) -> {
+            Quiz quiz = Quiz.builder()
+                    .quizId(rs.getInt("quiz_id"))
+                    .categoryId(rs.getInt("category_id"))
+                    .questionText(rs.getString("question_text"))
+                    .difficulty(rs.getString("difficulty"))
+                    .referenceUrl(rs.getString("reference_url")) // Null 가능
+                    .blankSentence(rs.getString("blank_sentence"))
+                    .build();
+            return new QuizViewDTO(quiz);
         };
     }
 

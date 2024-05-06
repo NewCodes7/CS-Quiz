@@ -1,15 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>새로운 퀴즈 생성</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-</head>
+<head th:replace="~{common/fragments/config :: ConfigFragment}"></head>
+
 <body>
-<div class="p-5 mb-5 text-center</> bg-light">
-    <h1 class="mb-3">CS Quiz</h1>
-    <h4 class="mb-3">웹 개발자로서 필수로 알아야 할 CS 지식 퀴즈쇼!</h4>
-</div>
+<header th:replace="~{common/fragments/header :: HeaderFragment}"></header>
 
 <div class="container mt-5">
     <div class="row">
@@ -32,8 +26,11 @@
         </div>
     </div>
 </div>
-
-<script src = "/static/js/quizRequest.js"></script>
+<script type="text/javascript" th:src="@{/js/quizRequest.js}"></script>
+<!--Footer 영역을 참조합니다.-->
+<footer th:replace="~{common/fragments/footer :: FooterFragment}"></footer>
+<!-- 공통 스크립트-->
+<th:block th:replace="~{/common/fragments/script :: scriptFragment}"></th:block>
 
 </body>
 </html>
