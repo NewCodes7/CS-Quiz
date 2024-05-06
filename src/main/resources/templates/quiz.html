@@ -17,6 +17,7 @@
         <div class="col-lg-8">
             <article>
                 <input type="hidden" id="quiz-id" th:value="${quiz.quizId}">
+                <td th:text="${quiz.isCorrect} ? '상태: solved' : '상태: unsolved'"></td>
                 <header class="mb-4">
                     <h3 class="card-title" th:text="${quiz.questionText}"></h3>
                 </header>

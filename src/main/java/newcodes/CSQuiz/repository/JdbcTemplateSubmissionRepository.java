@@ -3,6 +3,7 @@ package newcodes.CSQuiz.repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import newcodes.CSQuiz.domain.Submission;
+import newcodes.CSQuiz.domain.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -38,5 +39,20 @@ public class JdbcTemplateSubmissionRepository implements SubmissionRepository {
 //        }
 
         return submission;
+    }
+
+    @Override
+    public Boolean findById(int userId, int quizId) {
+        String sql = "SELECT * FROM submissions WHERE user_id = ? AND quiz_id = ?";
+
+        return jdbcTemplate.query(sql, new Object[]{userId, quizId}, (rs, rowNum) -> {
+            Submission submission = Submission.builder()
+                    .correct(rs.getBoolean("correct"))
+                    .submissionDate(rs.getString("submission_date"))
+                    .userId(rs.getInt("user_id"))
+                    .quizId(rs.getInt("quiz_id"))
+                    .build();
+            return submission;
+        }).stream().anyMatch(Submission::getCorrect);
     }
 }

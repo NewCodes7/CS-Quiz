@@ -21,6 +21,7 @@
             </div>
             <div class="card-body">
                 <h5 class="card-title" th:text="${item.questionText}"></h5>
+                <p th:text="${item.isCorrect} ? '상태: solved' : '상태: unsolved'"></p>
                 <p class="card-text" th:switch="${item.categoryId}">
                     <span th:case="1">유형: 운영체제</span>
                     <span th:case="2">유형: 네트워크</span>
