@@ -2,11 +2,14 @@ package newcodes.CSQuiz.controller;
 
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
+import newcodes.CSQuiz.domain.Quiz;
 import newcodes.CSQuiz.dto.AnswerRequest;
 import newcodes.CSQuiz.dto.AnswerResponse;
 import newcodes.CSQuiz.dto.CustomUserDetails;
+import newcodes.CSQuiz.dto.QuizViewDTO;
 import newcodes.CSQuiz.dto.SubmissionDTO;
 import newcodes.CSQuiz.service.AnswerService;
+import newcodes.CSQuiz.service.SubmissionService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AnswerApiController {
 
     private final AnswerService answerService;
+    private final SubmissionService submissionService;
 
     @PostMapping("/quizzes/{id}")
     public String checkAnswer(
@@ -35,6 +39,13 @@ public class AnswerApiController {
                         .build());
 
         model.addAttribute("answerResponse", answerResponse);
+
+        // unsolved -> solved 비동기식 처리
+        Boolean isSolved = submissionService.findById(customUserDetails.getUserId(), answerRequest.getQuizId());
+        QuizViewDTO quizViewDTO = new QuizViewDTO();
+        quizViewDTO.setIsCorrect(isSolved);
+
+        model.addAttribute("quiz", quizViewDTO);
 
         return "/quiz :: #answerResult";
     }

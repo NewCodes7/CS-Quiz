@@ -1,46 +1,47 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
 <head>
     <meta charset="UTF-8">
     <title>퀴즈 목록</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 </head>
 <body>
-<div class="p-5 mb-5 text-center</> bg-light">
-    <h1 class="mb-3">CS Quiz</h1>
-    <h4 class="mb-3">웹 개발자로서 필수로 알아야 할 CS 지식 퀴즈쇼!</h4>
-</div>
 
-<div class="container">
-    <button type="button" id="create-btn"
-            th:onclick="|location.href='@{/new-quiz}'|"
-            class="btn btn-secondary btn-sm mb-3">퀴즈 등록</button>
-    <div class="row-6" th:each="item : ${quizzes}">
-        <div class="card">
-            <div class="card-header" th:text="${item.quizId}">
+<div layout:fragment="content">
+
+    <div class="container">
+        <button type="button" id="create-btn"
+                th:onclick="|location.href='@{/new-quiz}'|"
+                class="btn btn-secondary btn-sm mb-3">퀴즈 등록</button>
+        <div class="row-6" th:each="item : ${quizzes}">
+            <div class="card">
+                <div class="card-header" th:text="${item.quizId}">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${item.questionText}"></h5>
+                    <p th:text="${item.isCorrect} ? '상태: solved' : '상태: unsolved'"></p>
+                    <p class="card-text" th:switch="${item.categoryId}">
+                        <span th:case="1">유형: 운영체제</span>
+                        <span th:case="2">유형: 네트워크</span>
+                        <span th:case="3">유형: 데이터베이스</span>
+                        <span th:case="4">유형: 자료구조</span>
+                        <span th:case="5">유형: 알고리즘</span>
+                        <span th:case="*" th:text="''">Unknown</span>
+                    </p>
+                    <p class="card-text" th:text="'난이도: ' + ${item.difficulty}"></p>
+                    <p class="card-text" th:if="${item.attemptCount != 0}" th:text="'정답률: ' + ${#numbers.formatDecimal((item.correctCount / item.attemptCount * 100), 2)} + '%'"></p>
+                    <p class="card-text" th:if="${item.attemptCount == 0}">아직 푼 사람이 없습니다!</p>
+                    <a th:href="@{/quizzes/{id}(id=${item.quizId})}" class="btn btn-primary">풀어보기</a>
+                </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-title" th:text="${item.questionText}"></h5>
-                <p th:text="${item.isCorrect} ? '상태: solved' : '상태: unsolved'"></p>
-                <p class="card-text" th:switch="${item.categoryId}">
-                    <span th:case="1">유형: 운영체제</span>
-                    <span th:case="2">유형: 네트워크</span>
-                    <span th:case="3">유형: 데이터베이스</span>
-                    <span th:case="4">유형: 자료구조</span>
-                    <span th:case="5">유형: 알고리즘</span>
-                    <span th:case="*" th:text="''">Unknown</span>
-                </p>
-                <p class="card-text" th:text="'난이도: ' + ${item.difficulty}"></p>
-                <p class="card-text" th:if="${item.attemptCount != 0}" th:text="'정답률: ' + ${#numbers.formatDecimal((item.correctCount / item.attemptCount * 100), 2)} + '%'"></p>
-                <p class="card-text" th:if="${item.attemptCount == 0}">아직 푼 사람이 없습니다!</p>
-                <a th:href="@{/quizzes/{id}(id=${item.quizId})}" class="btn btn-primary">보러가기</a>
-            </div>
+            <br>
         </div>
-        <br>
-    </div>
 
-    <button type="button" class="btn btn-secondary" onclick="location.href='/logout'">로그아웃</button>
+        <button type="button" class="btn btn-secondary" onclick="location.href='/logout'">로그아웃</button>
+    </div>
 </div>
 
-<script src="/js/quiz.js"></script>
+<script src="/static/js/quiz.js"></script>
 </body>

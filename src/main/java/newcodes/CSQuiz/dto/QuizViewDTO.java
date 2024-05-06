@@ -2,11 +2,13 @@ package newcodes.CSQuiz.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import newcodes.CSQuiz.domain.Quiz;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class QuizViewDTO {
 
     private Integer quizId;
