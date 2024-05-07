@@ -1,6 +1,7 @@
 package newcodes.CSQuiz.repository;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import newcodes.CSQuiz.domain.Quiz;
 import newcodes.CSQuiz.dto.AnswerDTO;
 import newcodes.CSQuiz.dto.QuizViewDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -82,12 +84,22 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
     }
 
     @Override
-    public List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize) {
+    public List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize, String kw) {
         int offset = (pageNumber - 1) * pageSize;
-        String sql = "SELECT * FROM quizzes LIMIT ?, ?";
+        String sql;
+        Object[] params;
 
-        return jdbcTemplate.query(sql, new Object[]{offset, pageSize}, quizDtoRowMapper());
+        if (kw.equals("")) {
+            sql = "SELECT * FROM quizzes LIMIT ?, ?";
+            params = new Object[]{offset, pageSize};
+        } else {
+            sql = "SELECT * FROM quizzes WHERE question_text LIKE ? LIMIT ?, ?";
+            params = new Object[]{"%" + kw + "%", offset, pageSize};
+        }
+
+        return jdbcTemplate.query(sql, params, quizDtoRowMapper());
     }
+
 
     @Override
     public List<Quiz> findAll() {

@@ -39,8 +39,8 @@ public class QuizService {
         return quizRepository.save(quiz, answers);
     }
 
-    public List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize) {
-        return quizRepository.findQuizzes(pageNumber, pageSize);
+    public List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize, String kw) {
+        return quizRepository.findQuizzes(pageNumber, pageSize, kw);
     }
 
     public List<Quiz> findAll() {

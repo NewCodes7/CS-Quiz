@@ -28,8 +28,9 @@ public class QuizViewController {
     public String getQuizzes(Model model,
                              @AuthenticationPrincipal CustomUserDetails customUserDetails,
                              @RequestParam(defaultValue = "1") int pageNumber,
-                             @RequestParam(defaultValue = "10") int pageSize) {
-        List<QuizViewDTO> quizzes = quizService.findQuizzes(pageNumber, pageSize);
+                             @RequestParam(defaultValue = "10") int pageSize,
+                             @RequestParam(value = "kw", defaultValue = "") String kw) { // 타임리프와 매핑해보기 (학습)
+        List<QuizViewDTO> quizzes = quizService.findQuizzes(pageNumber, pageSize, kw);
         int totalPages = quizService.findAll().size(); // FIXME: 더 효율적으로 리팩토링 필요
 
         for (QuizViewDTO quiz : quizzes) {
@@ -39,6 +40,7 @@ public class QuizViewController {
         }
 
         model.addAttribute("quizzes", quizzes);
+        model.addAttribute("kw", kw);
 
         // paging 객체를 따로 둬서 페이지관리자 따로 두기
         Paging paging = new Paging(pageNumber, (int) Math.ceil((double) totalPages / pageSize));
