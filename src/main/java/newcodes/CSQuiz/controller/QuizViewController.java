@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,8 +30,9 @@ public class QuizViewController {
                              @AuthenticationPrincipal CustomUserDetails customUserDetails,
                              @RequestParam(defaultValue = "1") int pageNumber,
                              @RequestParam(defaultValue = "10") int pageSize,
-                             @RequestParam(value = "kw", defaultValue = "") String kw) { // 타임리프와 매핑해보기 (학습)
-        List<QuizViewDTO> quizzes = quizService.findQuizzes(pageNumber, pageSize, kw);
+                             @RequestParam(value = "kw", defaultValue = "") String kw,  // 타임리프와 매핑해보기 (학습)
+                             @RequestParam(required = false) List<String> category) {
+        List<QuizViewDTO> quizzes = quizService.findQuizzes(pageNumber, pageSize, kw, category);
         int totalPages = quizService.findAll().size(); // FIXME: 더 효율적으로 리팩토링 필요
 
         for (QuizViewDTO quiz : quizzes) {
@@ -45,6 +47,15 @@ public class QuizViewController {
         // paging 객체를 따로 둬서 페이지관리자 따로 두기
         Paging paging = new Paging(pageNumber, (int) Math.ceil((double) totalPages / pageSize));
         model.addAttribute("paging", paging);
+
+        // FIXME: 해당 방식 카테고리 선택 기능도 검색 기능 방식처럼 작동시키기 -> searchForm에 통합!!
+        List<String> categories = new ArrayList<String>();
+        categories.add("네트워크");
+        categories.add("운영체제");
+        categories.add("데이터베이스");
+        categories.add("자료구조");
+        categories.add("알고리즘");
+        model.addAttribute("categories", categories);
 
         return "quizList";
     }

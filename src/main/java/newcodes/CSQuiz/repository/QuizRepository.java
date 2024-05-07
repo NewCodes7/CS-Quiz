@@ -11,7 +11,7 @@ import newcodes.CSQuiz.dto.QuizViewDTO;
 
 public interface QuizRepository {
     Quiz save(Quiz quiz, Map<Answer, List<AlternativeAnswer>> answers);
-    List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize, String kw);
+    List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize, String kw, List<String> categories);
     List<Quiz> findAll();
     Optional<Quiz> findById(int id);
     Map<Answer, List<AlternativeAnswer>> findAnswersById(int id);
