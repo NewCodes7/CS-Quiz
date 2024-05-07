@@ -11,6 +11,6 @@ import lombok.Setter;
 public class AnswerResponse {
     private int userId;
     private int quizId;
-    private boolean isAllCorrect;
+    private Boolean isAllCorrect;
     private List<Boolean> isCorrect;
 }

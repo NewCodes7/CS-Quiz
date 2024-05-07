@@ -1,26 +1,18 @@
 package newcodes.CSQuiz.domain;
 
-public enum Category {
-    Operating_System(1, "운영체제"),
-    Network(2, "네트워크"),
-    Database(3, "데이터베이스"),
-    Data_Structure(4, "자료구조"),
-    Algorithm(5, "알고리즘");
+import lombok.Getter;
 
-    private final String value;
+public enum Category {
+    운영체제(1),
+    네트워크(2),
+    데이터베이스(3),
+    자료구조(4),
+    알고리즘(5);
+
+    @Getter
     private final int id;
 
-    Category(int id, String value) {
+    Category(int id) {
         this.id = id;
-        this.value = value;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return value;
     }
 }

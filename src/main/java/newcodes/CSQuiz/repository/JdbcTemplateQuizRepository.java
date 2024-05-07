@@ -1,6 +1,7 @@
 package newcodes.CSQuiz.repository;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +9,13 @@ import java.util.Optional;
 import javax.sql.DataSource;
 import newcodes.CSQuiz.domain.AlternativeAnswer;
 import newcodes.CSQuiz.domain.Answer;
+import newcodes.CSQuiz.domain.Category;
 import newcodes.CSQuiz.domain.Difficulty;
 import newcodes.CSQuiz.domain.Quiz;
 import newcodes.CSQuiz.dto.AnswerDTO;
+import newcodes.CSQuiz.dto.QuizViewDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -79,6 +83,42 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
 
         return quiz;
     }
+
+    @Override
+    public List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize, String kw, List<String> categories) {
+        int offset = (pageNumber - 1) * pageSize;
+        String sql;
+        Object[] params;
+
+        if (categories == null || categories.isEmpty()) {
+            if (kw.isEmpty()) {
+                sql = "SELECT * FROM quizzes LIMIT ?, ?";
+                params = new Object[]{offset, pageSize};
+            } else {
+                sql = "SELECT * FROM quizzes WHERE question_text LIKE ? LIMIT ?, ?";
+                params = new Object[]{"%" + kw + "%", offset, pageSize};
+            }
+        } else {
+            StringBuilder categoryIds = new StringBuilder();
+            for (String category : categories) {
+                // 각 카테고리의 문자열을 해당하는 id로 변환
+                Category cat = Category.valueOf(category);
+                categoryIds.append(cat.getId()).append(",");
+            }
+            categoryIds.deleteCharAt(categoryIds.length() - 1); // 마지막 쉼표 제거
+
+            if (kw.isEmpty()) {
+                sql = "SELECT * FROM quizzes WHERE category_id IN (" + categoryIds + ") LIMIT ?, ?";
+                params = new Object[]{offset, pageSize};
+            } else {
+                sql = "SELECT * FROM quizzes WHERE category_id IN (" + categoryIds + ") AND question_text LIKE ? LIMIT ?, ?";
+                params = new Object[]{"%" + kw + "%", offset, pageSize};
+            }
+        }
+
+        return jdbcTemplate.query(sql, params, quizDtoRowMapper());
+    }
+
 
     @Override
     public List<Quiz> findAll() {
@@ -179,6 +219,20 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
                     .blankSentence(rs.getString("blank_sentence"))
                     .build();
             return quiz;
+        };
+    }
+
+    private RowMapper<QuizViewDTO> quizDtoRowMapper() {
+        return (rs, rowNum) -> {
+            Quiz quiz = Quiz.builder()
+                    .quizId(rs.getInt("quiz_id"))
+                    .categoryId(rs.getInt("category_id"))
+                    .questionText(rs.getString("question_text"))
+                    .difficulty(rs.getString("difficulty"))
+                    .referenceUrl(rs.getString("reference_url")) // Null 가능
+                    .blankSentence(rs.getString("blank_sentence"))
+                    .build();
+            return new QuizViewDTO(quiz);
         };
     }
 

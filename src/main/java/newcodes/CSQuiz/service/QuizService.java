@@ -13,6 +13,7 @@ import newcodes.CSQuiz.domain.Quiz;
 import newcodes.CSQuiz.dto.AnswerDTO;
 import newcodes.CSQuiz.dto.QuizDTO;
 import newcodes.CSQuiz.dto.QuizRequest;
+import newcodes.CSQuiz.dto.QuizViewDTO;
 import newcodes.CSQuiz.dto.UpdateQuizRequest;
 import newcodes.CSQuiz.repository.QuizRepository;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,10 @@ public class QuizService {
         }
 
         return quizRepository.save(quiz, answers);
+    }
+
+    public List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize, String kw, List<String> categories) {
+        return quizRepository.findQuizzes(pageNumber, pageSize, kw, categories);
     }
 
     public List<Quiz> findAll() {
