@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import newcodes.CSQuiz.answer.domain.AlternativeAnswer;
-import newcodes.CSQuiz.answer.domain.Answer;
+import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
+import newcodes.CSQuiz.quiz.domain.Answer;
 import newcodes.CSQuiz.quiz.domain.Quiz;
 import newcodes.CSQuiz.answer.dto.AnswerDTO;
-import newcodes.CSQuiz.quiz.dto.QuizRequest;
+import newcodes.CSQuiz.quiz.dto.QuizCreateRequest;
 import newcodes.CSQuiz.quiz.dto.QuizViewDTO;
-import newcodes.CSQuiz.quiz.dto.UpdateQuizRequest;
+import newcodes.CSQuiz.quiz.dto.QuizUpdateRequest;
 import newcodes.CSQuiz.quiz.repository.QuizRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,18 +22,20 @@ public class QuizService {
 
     private final QuizRepository quizRepository;
 
-    public Quiz save(QuizRequest request) {
+    public Quiz saveQuizWithAnswers(QuizCreateRequest request) {
         Quiz quiz = request.getQuiz().toEntity();
-        List<AnswerDTO> answerRequest = request.getAnswers();
 
-        Map<Answer, List<AlternativeAnswer>> answers = new HashMap<>();
+        return quizRepository.save(quiz, createAnswerMap(request.getAnswers()));
+    }
 
-        for (AnswerDTO answer : answerRequest) {
-            Answer mainAnswer = answer.toAnswerEntity();
-            answers.put(mainAnswer, answer.toAlternativeAnswerEntity());
+    private Map<Answer, List<AlternativeAnswer>> createAnswerMap(List<AnswerDTO> answerDTOs) {
+        Map<Answer, List<AlternativeAnswer>> answerMap = new HashMap<>();
+
+        for (AnswerDTO answerDTO : answerDTOs) {
+            answerMap.put(answerDTO.toAnswerEntity(), answerDTO.toAlternativeAnswerEntity());
         }
 
-        return quizRepository.save(quiz, answers);
+        return answerMap;
     }
 
     public List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize, String kw, List<String> categories) {
@@ -57,26 +59,16 @@ public class QuizService {
     }
 
     @Transactional // 역할?
-    public Quiz update(int id, UpdateQuizRequest request) {
+    public Quiz update(int id, QuizUpdateRequest request) {
         Quiz quiz = request.getQuiz().toEntity();
-        List<AnswerDTO> answerRequest = request.getAnswers();
 
-        Map<Answer, List<AlternativeAnswer>> answers = new HashMap<>();
+        // FIXME: update 방식 리팩토링 (굳이 객체 update해서 보내줘야 하나?)
+        //
+        //     Quiz originalQuiz = quizRepository.findById(id)
+        //           .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
+        //     Map<Answer, List<AlternativeAnswer>> originalAnswers = quizRepository.findAnswersById(id);
+        // originalQuiz.update(quiz.getCategoryId(), quiz.getQuestionText(), quiz.getDifficulty(), quiz.getReferenceUrl(), quiz.getBlankSentence());
 
-        for (AnswerDTO answer : answerRequest) {
-            Answer mainAnswer = answer.toAnswerEntity();
-            answers.put(mainAnswer, answer.toAlternativeAnswerEntity());
-        }
-
-        // FIXME: update 방식 리팩토링
-            // 굳이 객체 update해서 보내줘야 하나?
-            //     Quiz originalQuiz = quizRepository.findById(id)
-            //           .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
-            //     Map<Answer, List<AlternativeAnswer>> originalAnswers = quizRepository.findAnswersById(id);
-            // originalQuiz.update(quiz.getCategoryId(), quiz.getQuestionText(), quiz.getDifficulty(), quiz.getReferenceUrl(), quiz.getBlankSentence());
-
-        quizRepository.update(quiz, answers);
-
-        return quiz;
+        return quizRepository.update(quiz, createAnswerMap(request.getAnswers()));
     }
 }

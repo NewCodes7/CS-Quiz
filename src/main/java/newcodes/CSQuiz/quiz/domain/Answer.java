@@ -1,4 +1,4 @@
-package newcodes.CSQuiz.answer.domain;
+package newcodes.CSQuiz.quiz.domain;
 
 import java.util.List;
 import lombok.Builder;

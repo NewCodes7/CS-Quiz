@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-import newcodes.CSQuiz.answer.domain.AlternativeAnswer;
-import newcodes.CSQuiz.answer.domain.Answer;
+import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
+import newcodes.CSQuiz.quiz.domain.Answer;
 
 @Getter
 @Setter

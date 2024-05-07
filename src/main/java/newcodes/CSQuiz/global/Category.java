@@ -1,5 +1,8 @@
 package newcodes.CSQuiz.global;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
 
 public enum Category {
@@ -9,10 +12,16 @@ public enum Category {
     자료구조(4),
     알고리즘(5);
 
+    Category(int id) {
+        this.id = id;
+    }
+
     @Getter
     private final int id;
 
-    Category(int id) {
-        this.id = id;
+    public static List<String> getCategories() {
+        return Arrays.stream(Category.values())
+                .map(Category::name)
+                .collect(Collectors.toList());
     }
 }

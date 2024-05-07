@@ -3,8 +3,8 @@ package newcodes.CSQuiz.quiz.controller;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import newcodes.CSQuiz.quiz.dto.QuizRequest;
-import newcodes.CSQuiz.quiz.dto.UpdateQuizRequest;
+import newcodes.CSQuiz.quiz.dto.QuizCreateRequest;
+import newcodes.CSQuiz.quiz.dto.QuizUpdateRequest;
 import newcodes.CSQuiz.quiz.service.QuizService;
 import newcodes.CSQuiz.quiz.domain.Quiz;
 import org.springframework.http.HttpStatus;
@@ -24,8 +24,8 @@ public class QuizApiController {
     private final QuizService quizService;
 
     @PostMapping("/api/quizzes")
-    public ResponseEntity<Quiz> addQuiz(@RequestBody QuizRequest request) {
-        Quiz savedQuiz = quizService.save(request);
+    public ResponseEntity<Quiz> addQuiz(@RequestBody QuizCreateRequest request) {
+        Quiz savedQuiz = quizService.saveQuizWithAnswers(request);
 
         // FIXME: Quiz뿐만 아니라 Answer도 반환하기
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -63,11 +63,10 @@ public class QuizApiController {
                 .build();
     }
 
-    // TODO: 문제, 정답 업데이트
-    // FIXME: UpdateQuizRequest 이름 바꾸기 (QuizRequest와 혼동)
+    // TODO: 문제, 정답 업데이트 (QuizView와 연계)
     @PutMapping("/api/quizzes/{id}")
     public ResponseEntity<Quiz> updateQuiz(@PathVariable int id,
-                                                 @RequestBody UpdateQuizRequest request) {
+                                                 @RequestBody QuizUpdateRequest request) {
         Quiz updatedQuiz = quizService.update(id, request);
 
         return ResponseEntity.ok()

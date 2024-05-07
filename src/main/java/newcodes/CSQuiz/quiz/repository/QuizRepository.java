@@ -3,8 +3,8 @@ package newcodes.CSQuiz.quiz.repository;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import newcodes.CSQuiz.answer.domain.AlternativeAnswer;
-import newcodes.CSQuiz.answer.domain.Answer;
+import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
+import newcodes.CSQuiz.quiz.domain.Answer;
 import newcodes.CSQuiz.quiz.domain.Quiz;
 import newcodes.CSQuiz.quiz.dto.QuizViewDTO;
 
