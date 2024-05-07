@@ -1,8 +1,10 @@
 package newcodes.CSQuiz.config.jwt;
 
 import io.jsonwebtoken.Jwts;
-import newcodes.CSQuiz.domain.User;
-import newcodes.CSQuiz.repository.UserRepository;
+import newcodes.CSQuiz.user.config.jwt.JwtProperties;
+import newcodes.CSQuiz.user.config.jwt.TokenProvider;
+import newcodes.CSQuiz.user.domain.User;
+import newcodes.CSQuiz.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

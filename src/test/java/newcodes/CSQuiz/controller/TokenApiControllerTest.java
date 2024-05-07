@@ -2,12 +2,12 @@ package newcodes.CSQuiz.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import newcodes.CSQuiz.config.jwt.JwtFactory;
-import newcodes.CSQuiz.config.jwt.JwtProperties;
-import newcodes.CSQuiz.domain.RefreshToken;
-import newcodes.CSQuiz.domain.User;
-import newcodes.CSQuiz.dto.CreateAccessTokenRequest;
-import newcodes.CSQuiz.repository.RefreshTokenRepository;
-import newcodes.CSQuiz.repository.UserRepository;
+import newcodes.CSQuiz.user.config.jwt.JwtProperties;
+import newcodes.CSQuiz.user.domain.RefreshToken;
+import newcodes.CSQuiz.user.domain.User;
+import newcodes.CSQuiz.user.dto.CreateAccessTokenRequest;
+import newcodes.CSQuiz.user.repository.RefreshTokenRepository;
+import newcodes.CSQuiz.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
