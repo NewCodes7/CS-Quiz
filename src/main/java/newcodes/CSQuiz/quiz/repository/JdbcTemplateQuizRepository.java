@@ -89,7 +89,7 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         List<Object> params = new ArrayList<>();
 
         // 필터링 - 카테고리
-        if (categories != null && !categories.isEmpty()) {
+        if (!categories.get(0).equals("none")) {
             StringBuilder categoryIds = new StringBuilder();
 
             for (String category : categories) {

@@ -1,5 +1,6 @@
 package newcodes.CSQuiz.quiz.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.answer.service.SubmissionService;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,16 +31,30 @@ public class QuizViewController {
                              @RequestParam(defaultValue = "1") int pageNumber,
                              @RequestParam(defaultValue = "10") int pageSize,
                              @RequestParam(value = "kw", defaultValue = "") String kw,  // 타임리프와 매핑해보기 (학습)
-                             @RequestParam(required = false) List<String> category) {
-        List<QuizViewDTO> quizzes = quizService.findQuizzes(pageNumber, pageSize, kw, category);
+                             @RequestParam(required = false, defaultValue = "none") String category,
+                             @RequestParam(required = false, defaultValue = "none") String statuses) {
+        // REFACTOR: 인자 클래스 DTO로 감싸기?
+        List<String> categories = List.of(category.split(","));
+        List<String> status = List.of(statuses.split(","));
+
+        List<QuizViewDTO> quizzes = quizService.findQuizzes(pageNumber, pageSize, kw, categories);
         int totalPages = quizService.findAll().size(); // FIXME: 더 효율적으로 리팩토링 필요 -> JPA & Pageable
         Paging paging = new Paging(pageNumber, (int) Math.ceil((double) totalPages / pageSize));
+
+        List<QuizViewDTO> quizzesToRemove = new ArrayList<>();
 
         quizzes.forEach(quiz -> {
             Integer userId = customUserDetails.getUserId();
             Boolean isSolved = submissionService.findById(userId, quiz.getQuizId());
             quiz.setIsCorrect(isSolved);
+
+            if (!status.get(0).equals("none")
+                    && ((!status.contains("solved") && isSolved) || (!status.contains("unsolved") && !isSolved))) {
+                quizzesToRemove.add(quiz);
+            }
         });
+
+        quizzes.removeAll(quizzesToRemove);
 
         model.addAttribute("quizzes", quizzes);
         model.addAttribute("kw", kw);
