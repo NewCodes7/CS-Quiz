@@ -23,27 +23,45 @@ public class AnswerApiController {
 
     @PostMapping("/quizzes/{id}")
     public String checkAnswer(
-            Model model, @ModelAttribute("answerRequest") AnswerRequest answerRequest,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+            @ModelAttribute("answerRequest") AnswerRequest answerRequest,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            Model model) {
         AnswerResponse answerResponse = answerService.check(answerRequest);
-        answerResponse.setQuizId(answerRequest.getQuizId());
-        answerResponse.setUserId(answerRequest.getUserId());
-
-        answerService.save(SubmissionDTO.builder()
-                        .userId(customUserDetails.getUserId())
-                        .quizId(answerRequest.getQuizId())
-                        .correct(answerResponse.getIsAllCorrect())
-                        .build());
-
-        model.addAttribute("answerResponse", answerResponse);
-
-        // unsolved -> solved 비동기식 처리
-        Boolean isSolved = submissionService.findById(customUserDetails.getUserId(), answerRequest.getQuizId());
-        QuizViewDTO quizViewDTO = new QuizViewDTO();
-        quizViewDTO.setIsCorrect(isSolved);
-
-        model.addAttribute("quiz", quizViewDTO);
+        updateAnswerResponse(answerRequest, answerResponse, customUserDetails, model);
+        saveSubmission(answerRequest, answerResponse, customUserDetails);
+        updateQuizView(answerRequest, customUserDetails, model);
 
         return "/quiz :: #answerResult";
+    }
+
+    private void updateAnswerResponse(
+            AnswerRequest answerRequest,
+            AnswerResponse answerResponse,
+            CustomUserDetails customUserDetails,
+            Model model) {
+        answerResponse.setQuizId(answerRequest.getQuizId());
+        answerResponse.setUserId(answerRequest.getUserId());
+        model.addAttribute("answerResponse", answerResponse);
+    }
+
+    private void saveSubmission(
+            AnswerRequest answerRequest,
+            AnswerResponse answerResponse,
+            CustomUserDetails customUserDetails) {
+        answerService.save(SubmissionDTO.builder()
+                .userId(customUserDetails.getUserId())
+                .quizId(answerRequest.getQuizId())
+                .correct(answerResponse.getIsAllCorrect())
+                .build());
+    }
+
+    private void updateQuizView(
+            AnswerRequest answerRequest,
+            CustomUserDetails customUserDetails,
+            Model model) {
+        QuizViewDTO quizViewDTO = new QuizViewDTO();
+        Boolean isSolved = submissionService.findById(customUserDetails.getUserId(), answerRequest.getQuizId());
+        quizViewDTO.setIsCorrect(isSolved);
+        model.addAttribute("quiz", quizViewDTO);
     }
 }
