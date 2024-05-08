@@ -22,6 +22,7 @@ public class QuizService {
 
     private final QuizRepository quizRepository;
 
+    @Transactional
     public Quiz saveQuizWithAnswers(QuizCreateRequest request) {
         Quiz quiz = request.getQuiz().toEntity();
 

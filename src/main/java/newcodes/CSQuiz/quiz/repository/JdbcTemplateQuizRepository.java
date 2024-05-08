@@ -1,6 +1,7 @@
 package newcodes.CSQuiz.quiz.repository;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +50,7 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
             return pstmt;
         }, keyHolder);
 
-        int quizId = keyHolder.getKey().intValue();
-        quiz.setQuizId(quizId);
+        quiz.setQuizId(keyHolder.getKey().intValue());
 
         // answer 저장
         String answerSql = "INSERT INTO answers (quiz_id, answer_text) VALUES (?, ?)";
@@ -80,39 +80,47 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         return quiz;
     }
 
+    /*
+    * 옵션: 페이징(LIMIT), 키워드(WHERE), 카테고리(WHERE), (풀이 여부)
+    */
     @Override
     public List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize, String kw, List<String> categories) {
-        int offset = (pageNumber - 1) * pageSize;
-        String sql;
-        Object[] params;
+        String sql = "SELECT * FROM quizzes ";
+        List<Object> params = new ArrayList<>();
 
-        if (categories == null || categories.isEmpty()) {
-            if (kw.isEmpty()) {
-                sql = "SELECT * FROM quizzes LIMIT ?, ?";
-                params = new Object[]{offset, pageSize};
-            } else {
-                sql = "SELECT * FROM quizzes WHERE question_text LIKE ? LIMIT ?, ?";
-                params = new Object[]{"%" + kw + "%", offset, pageSize};
-            }
-        } else {
+        // 필터링 - 카테고리
+        if (categories != null && !categories.isEmpty()) {
             StringBuilder categoryIds = new StringBuilder();
+
             for (String category : categories) {
-                // 각 카테고리의 문자열을 해당하는 id로 변환
                 Category cat = Category.valueOf(category);
                 categoryIds.append(cat.getId()).append(",");
             }
-            categoryIds.deleteCharAt(categoryIds.length() - 1); // 마지막 쉼표 제거
 
-            if (kw.isEmpty()) {
-                sql = "SELECT * FROM quizzes WHERE category_id IN (" + categoryIds + ") LIMIT ?, ?";
-                params = new Object[]{offset, pageSize};
-            } else {
-                sql = "SELECT * FROM quizzes WHERE category_id IN (" + categoryIds + ") AND question_text LIKE ? LIMIT ?, ?";
-                params = new Object[]{"%" + kw + "%", offset, pageSize};
-            }
+            categoryIds.deleteCharAt(categoryIds.length() - 1); // 마지막 쉼표 제거
+            sql += "WHERE category_id IN (" + categoryIds + ") ";
         }
 
-        return jdbcTemplate.query(sql, params, quizDtoRowMapper());
+        // 검색 - 키워드
+        if (!kw.isEmpty()) {
+            if (sql.contains("WHERE")) {
+                sql += "AND ";
+            } else {
+                sql += "WHERE ";
+            }
+
+            sql += "question_text LIKE ? ";
+            params.add("%" + kw + "%");
+        }
+
+        // 페이징
+        int offset = (pageNumber - 1) * pageSize;
+
+        sql += "LIMIT ?, ?";
+        params.add(offset);
+        params.add(pageSize);
+
+        return jdbcTemplate.query(sql, params.toArray(), quizDtoRowMapper());
     }
 
 
@@ -133,10 +141,14 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
 
     @Override
     public Map<Answer, List<AlternativeAnswer>> findAnswersById(int quizId) {
+
+        // answer 쿼리
         String answerSql = "SELECT * FROM answers where quiz_id = ?";
         List<Answer> result = jdbcTemplate.query(answerSql, answerRowMapper(), quizId);
 
+        // alternativeAnswer 쿼리
         String alternativeAnswerSql = "SELECT * FROM alternative_answers where answer_id = ?";
+
         Map<Answer, List<AlternativeAnswer>> answers = new HashMap<>();
         for (Answer answer : result) {
             int answerId = answer.getAnswerId();
