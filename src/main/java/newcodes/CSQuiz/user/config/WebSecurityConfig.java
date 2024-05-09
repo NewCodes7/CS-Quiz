@@ -1,7 +1,10 @@
 package newcodes.CSQuiz.user.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import newcodes.CSQuiz.user.config.jwt.TokenProvider;
 import newcodes.CSQuiz.user.service.UserDetailService;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,26 +16,32 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class WebSecurityConfig {
 
+    private final TokenProvider tokenProvider;
     private final UserDetailService userService;
 
     @Bean
     public WebSecurityCustomizer configure() {
         return (web) -> web.ignoring()
-                .requestMatchers("/static/**");
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.info("securityFilterChain 실행");
+
         http
+            .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize ->
                     authorize
-                            .requestMatchers("/login", "/signup", "/user").permitAll()
+                            .requestMatchers("/login", "/signup", "/quizzes", "/").permitAll()
                             .anyRequest().authenticated()
             )
             .formLogin(formLogin ->

@@ -43,18 +43,21 @@ public class QuizViewController {
 
         List<QuizViewDTO> quizzesToRemove = new ArrayList<>();
 
-        quizzes.forEach(quiz -> {
-            Integer userId = customUserDetails.getUserId();
-            Boolean isSolved = submissionService.findById(userId, quiz.getQuizId());
-            quiz.setIsCorrect(isSolved);
+        // 사용자가 로그인하지 않았을 때에도 quizzes 조회가 가능하도록
+        if (customUserDetails != null) {
+            quizzes.forEach(quiz -> {
+                Integer userId = customUserDetails.getUserId();
+                Boolean isSolved = submissionService.findById(userId, quiz.getQuizId());
+                quiz.setIsCorrect(isSolved);
 
-            if (!status.get(0).equals("none")
-                    && ((!status.contains("solved") && isSolved) || (!status.contains("unsolved") && !isSolved))) {
-                quizzesToRemove.add(quiz);
-            }
-        });
+                if (!status.get(0).equals("none")
+                        && ((!status.contains("solved") && isSolved) || (!status.contains("unsolved") && !isSolved))) {
+                    quizzesToRemove.add(quiz);
+                }
+            });
 
-        quizzes.removeAll(quizzesToRemove);
+            quizzes.removeAll(quizzesToRemove);
+        }
 
         model.addAttribute("quizzes", quizzes);
         model.addAttribute("kw", kw);
