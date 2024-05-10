@@ -29,7 +29,7 @@ public class UserDetailService implements UserDetailsService {
             throw new IllegalArgumentException("Password cannot be null");
         }
 
-        // 사용자 정보를 UserDetails 객체로 변환하여 반환
+        // 사용자 정보를 UserDetails 객체로 변환하여 반환.
         return new CustomUserDetails(user);
     }
 }
