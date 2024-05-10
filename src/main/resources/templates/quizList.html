@@ -20,10 +20,23 @@
 
     </div>
     <div class="dropdown">
-        <button class="title">문제 카테고리</button>
-        <ul class="menu-list" style="list-style-type: none;">
+        <button class="title" onclick="toggleDropdown()">문제 카테고리</button>
+        <ul class="menu-list" id="category-list"  style="list-style-type: none;">
             <li th:each="category : ${categories}">
                 <input type="checkbox" class="category-checkbox" th:value="${category}" th:text="${category}" onchange="handleCheckboxChange()">
+            </li>
+        </ul>
+    </div>
+    <div class="dropdown">
+        <button class="title" onclick="toggleSolvedDropdown()">풀이 여부</button>
+        <ul class="menu-list" id="solved-check-list" style="list-style-type: none;">
+            <li>
+                <input type="checkbox" class="statuses-checkbox" id="solved-true-checkbox" onchange="handleCheckboxChange()">
+                <label for="solved-true-checkbox">푼 문제</label>
+            </li>
+            <li>
+                <input type="checkbox" class="statuses-checkbox" id="solved-false-checkbox" onchange="handleCheckboxChange()">
+                <label for="solved-false-checkbox">안 푼 문제</label>
             </li>
         </ul>
     </div>
@@ -88,74 +101,7 @@
 <footer th:replace="~{common/fragments/footer :: FooterFragment}"></footer>
 <!-- 공통 스크립트-->
 <th:block th:replace="~{/common/fragments/script :: scriptFragment}"></th:block>
-<script src="/static/js/quiz.js"></script>
-<script>
-    const page_elements = document.getElementsByClassName("page-link");
-    Array.from(page_elements).forEach(function(element) {
-        element.addEventListener('click', function() {
-            document.getElementById('page').value = this.dataset.page;
-            document.getElementById('searchForm').submit();
-        });
-    });
+<script type="text/javascript" th:src="@{/js/quizView.js}"></script>
 
-    const btn_search = document.getElementById("btn_search");
-    btn_search.addEventListener('click', function() {
-        document.getElementById('kw').value = document.getElementById('search_kw').value;
-        document.getElementById('page').value = 1;  // 검색버튼을 클릭할 경우 1페이지부터 조회한다.
-        document.getElementById('searchForm').submit();
-    });
-</script>
-<script>
-    // URL에서 모든 category 값 추출
-    var urlParams = new URLSearchParams(window.location.search);
-    var categoryParams = urlParams.getAll('category');
-
-    // 모든 체크박스 선택 해제
-    var checkboxes = document.querySelectorAll('.category-checkbox');
-    checkboxes.forEach(function(checkbox) {
-        checkbox.checked = false;
-    });
-
-    // 각 category 값과 일치하는 체크박스 선택
-    categoryParams.forEach(function(categoryParam) {
-        checkboxes.forEach(function(checkbox) {
-            if (checkbox.value === categoryParam) {
-                checkbox.checked = true;
-            }
-        });
-    });
-
-    var checkboxStatus = {};
-
-    // 체크박스 변경 시 호출되는 함수
-    function handleCheckboxChange() {
-        var checkboxes = document.querySelectorAll('.category-checkbox');
-        checkboxes.forEach(function(checkbox) {
-            checkboxStatus[checkbox.value] = checkbox.checked;
-        });
-
-        // 저장된 정보를 폼에 담기
-        updateForm();
-    }
-
-    // 폼 업데이트 함수
-    function updateForm() {
-        // hidden input 엘리먼트를 이용하여 각 체크박스의 상태를 폼에 담기
-        var form = document.getElementById('searchForm');
-        for (var category in checkboxStatus) {
-            if (checkboxStatus.hasOwnProperty(category) && checkboxStatus[category]) {
-                var input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'category';
-                input.value = category;
-                form.appendChild(input);
-            }
-        }
-
-        document.getElementById('kw').value = document.getElementById('search_kw').value;
-        document.getElementById('page').value = 1;
-        document.getElementById('searchForm').submit();
-    }
-</script>
 </body>
 </html>

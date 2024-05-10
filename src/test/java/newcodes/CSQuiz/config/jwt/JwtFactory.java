@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
 import lombok.Builder;
+import newcodes.CSQuiz.user.config.jwt.JwtProperties;
 
 import static java.util.Collections.emptyMap;
 
