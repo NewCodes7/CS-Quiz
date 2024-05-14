@@ -49,6 +49,7 @@ public class QuizViewController {
                 Integer userId = customUserDetails.getUserId();
                 Boolean isSolved = submissionService.findById(userId, quiz.getQuizId());
                 quiz.setIsCorrect(isSolved);
+                System.out.println(userId + " " + quiz.getQuizId() + " " + isSolved);
 
                 if (!status.get(0).equals("none")
                         && ((!status.contains("solved") && isSolved) || (!status.contains("unsolved") && !isSolved))) {
