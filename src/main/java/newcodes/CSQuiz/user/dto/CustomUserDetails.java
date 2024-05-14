@@ -1,7 +1,9 @@
 package newcodes.CSQuiz.user.dto;
 
+import java.util.stream.Collectors;
 import newcodes.CSQuiz.user.domain.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
@@ -15,10 +17,13 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        return user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toSet());
+
         // 사용자의 권한을 반환하는 로직을 여기에 작성하세요.
         // 예를 들어, 사용자가 가진 역할을 GrantedAuthority의 리스트로 반환할 수 있습니다.
         // 권한이 없는 경우에는 빈 리스트를 반환하거나 null을 반환할 수 있습니다.
-        return null;
     }
 
     @Override
