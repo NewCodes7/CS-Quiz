@@ -40,13 +40,18 @@ public class AnswerService {
             boolean isCurrentCorrect = false;
 
             for (Answer answer : answers.keySet()) {
-                if (userAnswer.equals(answer.getAnswerText())) {
+                String normalizedAnswer = answer.getAnswerText().replaceAll("\\s+", "").toLowerCase();
+                String normalizedUserAnswer = userAnswer.replaceAll("\\s+", "").toLowerCase();
+
+                if (normalizedUserAnswer.equals(normalizedAnswer)) {
                     isCurrentCorrect = true;
                     break;
                 }
 
                 for (AlternativeAnswer alternativeAnswer : answers.get(answer)) {
-                    if (userAnswer.equals(alternativeAnswer.getAlternativeText())) {
+                    String normalizedAlternativeAnswer = alternativeAnswer.getAlternativeText().replaceAll("\\s+", "").toLowerCase();
+
+                    if (normalizedUserAnswer.equals(normalizedAlternativeAnswer)) {
                         isCurrentCorrect = true;
                         break;
                     }
