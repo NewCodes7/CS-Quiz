@@ -39,8 +39,8 @@ public class QuizService {
         return answerMap;
     }
 
-    public List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize, String kw, List<String> categories) {
-        return quizRepository.findQuizzes(pageNumber, pageSize, kw, categories);
+    public List<QuizViewDTO> findQuizzes(int userId, String kw, List<String> categories, List<String> statuses) {
+        return quizRepository.findQuizzes(userId, kw, categories, statuses);
     }
 
     public List<Quiz> findAll() {

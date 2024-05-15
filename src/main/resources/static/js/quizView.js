@@ -1,46 +1,66 @@
+// 모든 체크박스 선택 해제
+var checkboxes = document.querySelectorAll('.category-checkbox');
+checkboxes.forEach(function(checkbox) {
+    checkbox.checked = false;
+});
+var solvedTrueCheckbox = document.getElementById('solved-true-checkbox');
+var solvedFalseCheckbox = document.getElementById('solved-false-checkbox');
+solvedTrueCheckbox.checked = false;
+solvedFalseCheckbox.checked = false;
+
+// URL에서 모든 category, statuses 값 추출
+var urlParams = new URLSearchParams(window.location.search);
+
+if (urlParams.get('category') != null) {
+    var categoryParams = urlParams.get('category').split(',');
+    categoryParams.forEach(function(categoryParam) {
+        checkboxes.forEach(function(checkbox) {
+            if (checkbox.value == categoryParam) {
+                checkbox.checked = true;
+            }
+        });
+    });
+}
+
+if (urlParams.get('statuses') != null) {
+    var solvedParams = urlParams.get('statuses').split(',');
+    solvedParams.forEach(function(solvedParam) {
+        if (solvedParam == 'solved') {
+            solvedTrueCheckbox.checked = true;
+        } else if (solvedParam == 'unsolved') {
+            solvedFalseCheckbox.checked = true;
+        }
+    });
+}
+
+// 페이징 기능
 const page_elements = document.getElementsByClassName("page-link");
 Array.from(page_elements).forEach(function(element) {
     element.addEventListener('click', function() {
         document.getElementById('page').value = this.dataset.page;
-        document.getElementById('searchForm').submit();
+        updateForm();
     });
 });
 
+// 검색 기능
 const btn_search = document.getElementById("btn_search");
 btn_search.addEventListener('click', function() {
     document.getElementById('kw').value = document.getElementById('search_kw').value;
-    document.getElementById('page').value = 1;  // 검색버튼을 클릭할 경우 1페이지부터 조회한다.
-    document.getElementById('searchForm').submit();
+    document.getElementById('page').value = 0;
+    updateForm();
 });
 
-function toggleDropdown() {
-    var categoryList = document.getElementById("category-list");
-    if (categoryList.style.display === "none") {
-        categoryList.style.display = "block";
-    } else {
-        categoryList.style.display = "none";
-    }
-}
-
-function toggleSolvedDropdown() {
-    var solvedDropdown = document.getElementById("solved-check-list");
-    if (solvedDropdown.style.display === "none") {
-        solvedDropdown.style.display = "block";
-    } else {
-        solvedDropdown.style.display = "none";
-    }
-}
-
-var solvedCheckboxStatus = {};
-var checkboxStatus = {};
-
-// 체크박스 변경 시 호출되는 함수
+// 필터링(카테고리, statuses) 기능
 function handleCheckboxChange() {
     var checkboxes = document.querySelectorAll('.category-checkbox');
     var solvedTrueCheckbox = document.getElementById('solved-true-checkbox');
     var solvedFalseCheckbox = document.getElementById('solved-false-checkbox');
 
+    var solvedCheckboxStatus = {};
+    var checkboxStatus = {};
+
     checkboxes.forEach(function(checkbox) {
+        console.log(checkbox);
         checkboxStatus[checkbox.value] = checkbox.checked;
     });
 
@@ -52,63 +72,12 @@ function handleCheckboxChange() {
         solvedCheckboxStatus['unsolved'] = 'unsolved';
     }
 
-    // 저장된 정보를 폼에 담기
-    updateForm();
-}
-
-// URL에서 모든 category 값 추출
-var urlParams = new URLSearchParams(window.location.search);
-var categoryParams = urlParams.get('category').split(',');
-var solvedParams = urlParams.get('statuses').split(',');
-
-// 모든 체크박스 선택 해제
-var checkboxes = document.querySelectorAll('.category-checkbox');
-checkboxes.forEach(function(checkbox) {
-    checkbox.checked = false;
-});
-
-var solvedTrueCheckbox = document.getElementById('solved-true-checkbox');
-var solvedFalseCheckbox = document.getElementById('solved-false-checkbox');
-solvedTrueCheckbox.checked = false;
-solvedFalseCheckbox.checked = false;
-
-// 각 category 값과 일치하는 체크박스 선택
-categoryParams.forEach(function(categoryParam) {
-    checkboxes.forEach(function(checkbox) {
-        if (checkbox.value == categoryParam) {
-            checkbox.checked = true;
-        }
-    });
-});
-
-// solved 값에 따라 체크박스 선택
-solvedParams.forEach(function(solvedParam) {
-    if (solvedParam == 'solved') {
-        solvedTrueCheckbox.checked = true;
-    } else if (solvedParam == 'unsolved') {
-        solvedFalseCheckbox.checked = true;
-    }
-});
-
-
-// 폼 업데이트 함수
-function updateForm() {
-    var form = document.getElementById('searchForm');
-
-    // 새로운 체크박스 추가
     var statuses = [];
     for (var value in solvedCheckboxStatus) {
         statuses.push(value);
     }
     var statusesValue = statuses.join(','); // 쉼표로 구분된 카테고리 값
 
-    var input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'statuses';
-    input.value = statusesValue;
-    form.appendChild(input);
-
-    // hidden input 엘리먼트를 이용하여 각 체크박스의 상태를 폼에 담기
     var categories = [];
     for (var category in checkboxStatus) {
         if (checkboxStatus.hasOwnProperty(category) && checkboxStatus[category]) {
@@ -117,13 +86,27 @@ function updateForm() {
     }
     var categoryValue = categories.join(','); // 쉼표로 구분된 카테고리 값
 
-    var categoryInput = document.createElement('input');
-    categoryInput.type = 'hidden';
-    categoryInput.name = 'category';
-    categoryInput.value = categoryValue;
-    form.appendChild(categoryInput);
+    document.getElementById('statuses').value = statusesValue;
+    document.getElementById('category').value = categoryValue;
+    document.getElementById('page').value = 0;
+    updateForm();
+}
 
-    document.getElementById('kw').value = document.getElementById('search_kw').value;
-    document.getElementById('page').value = 1;
+function updateForm() {
+    const field = document.getElementById('kw');
+    if (field.value == "") {
+        field.remove();
+    }
+
+    const field2 = document.getElementById('category');
+    if (field2.value == "none" || field2.value == "") {
+        field2.remove();
+    }
+
+    const field3 = document.getElementById('statuses');
+    if (field3.value == "none" || field3.value == "") {
+        field3.remove();
+    }
+
     document.getElementById('searchForm').submit();
 }

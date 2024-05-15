@@ -15,13 +15,13 @@ public class Paging {
         this.number = number;
         this.totalPages = totalPages;
 
-        if (number == totalPages) {
+        if (number == totalPages - 1) {
             hasNext = false;
         } else {
             hasNext = true;
         }
 
-        if (number == 1) {
+        if (number == 0) {
             hasPrevious = false;
         } else {
             hasPrevious = true;

@@ -85,6 +85,7 @@
                 <span th:case="3">데이터베이스</span>
                 <span th:case="4">자료구조</span>
                 <span th:case="5">알고리즘</span>
+                <span th:case="6">SW 신기술</span>
                 <span th:case="*">Unknown</span>
             </td>
             <td th:text="${item.difficulty}"></td>
@@ -103,11 +104,11 @@
                     <span>이전</span>
                 </a>
             </li>
-            <li th:each="page: ${#numbers.sequence(1, paging.totalPages)}"
+            <li th:each="page: ${#numbers.sequence(0, paging.totalPages - 1)}"
                 th:if="${page >= paging.number-5 and page <= paging.number+5}"
                 th:classappend="${page == paging.number} ? 'active'"
                 class="page-item">
-                <a th:text="${page}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
+                <a th:text="${page} + 1" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
             </li>
             <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
                 <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}">
@@ -123,7 +124,8 @@
     <form th:action="@{/quizzes}" method="get" id="searchForm">
         <input type="hidden" id="kw" name="kw" th:value="${kw}">
         <input type="hidden" id="page" name="pageNumber" th:value="${paging.number}">
-        <!--카테고리 선택 정보도 동적으로 담김-->
+        <input type="hidden" id="category" name="category" th:value="${category}">
+        <input type="hidden" id="statuses" name="statuses" th:value="${statuses}">
     </form>
 </div>
 <!--Footer 영역을 참조합니다.-->

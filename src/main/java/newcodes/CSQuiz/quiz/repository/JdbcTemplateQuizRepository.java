@@ -2,10 +2,12 @@ package newcodes.CSQuiz.quiz.repository;
 
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
 import newcodes.CSQuiz.quiz.domain.Answer;
@@ -83,42 +85,49 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
     /*
     * 옵션: 페이징(LIMIT), 키워드(WHERE), 카테고리(WHERE), (풀이 여부)
     */
-    @Override
-    public List<QuizViewDTO> findQuizzes(int pageNumber, int pageSize, String kw, List<String> categories) {
-        String sql = "SELECT * FROM quizzes ";
+    public List<QuizViewDTO> findQuizzes(int userId, String kw, List<String> categories, List<String> statuses) {
+        String sql = "SELECT q.*, "
+                + "(CASE "
+                + "WHEN SUM(CASE WHEN s.correct = 1 THEN 1 ELSE 0 END) > 0 THEN true "
+                + "ELSE false "
+                + "END) AS solved "
+                + "FROM quizzes q "
+                + "LEFT JOIN submissions s ON q.quiz_id = s.quiz_id AND s.user_id = ? ";
         List<Object> params = new ArrayList<>();
+        params.add(userId);
 
-        // 필터링 - 카테고리
         if (!categories.get(0).equals("none")) {
-            StringBuilder categoryIds = new StringBuilder();
-
-            for (String category : categories) {
-                Category cat = Category.valueOf(category);
-                categoryIds.append(cat.getId()).append(",");
-            }
-
-            categoryIds.deleteCharAt(categoryIds.length() - 1); // 마지막 쉼표 제거
-            sql += "WHERE category_id IN (" + categoryIds + ") ";
+            sql += "WHERE q.category_id IN (";
+            String categorySql = categories.stream()
+                    .map(c -> {
+                        System.out.println(c);
+                        return Integer.toString(Category.valueOf(c).getId());
+                    })
+                    .collect(Collectors.joining(","));
+            sql += categorySql + ") ";
         }
 
-        // 검색 - 키워드
-        if (!kw.isEmpty()) {
-            if (sql.contains("WHERE")) {
-                sql += "AND ";
-            } else {
-                sql += "WHERE ";
-            }
-
-            sql += "question_text LIKE ? ";
+        if (kw != null && kw != "") {
+            sql += (sql.contains("WHERE") ? "AND " : "WHERE ") + "q.question_text LIKE ? ";
             params.add("%" + kw + "%");
         }
 
-        // 페이징
-        int offset = (pageNumber - 1) * pageSize;
+        sql += "GROUP BY q.quiz_id";
 
-        sql += "LIMIT ?, ?";
-        params.add(offset);
-        params.add(pageSize);
+        if (!statuses.get(0).equals("none")) {
+            sql += " HAVING ";
+            boolean hasSolved = statuses.contains("solved");
+            boolean hasUnsolved = statuses.contains("unsolved");
+            if (hasSolved && hasUnsolved) {
+                sql += "1 = 1";
+            } else if (hasSolved) {
+                sql += "solved = true";
+            } else {
+                sql += "solved = false";
+            }
+        }
+
+        sql += ";";
 
         return jdbcTemplate.query(sql, params.toArray(), quizDtoRowMapper());
     }

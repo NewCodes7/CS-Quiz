@@ -28,42 +28,42 @@ public class QuizViewController {
     @GetMapping("/quizzes")
     public String getQuizzes(Model model,
                              @AuthenticationPrincipal CustomUserDetails customUserDetails,
-                             @RequestParam(defaultValue = "1") int pageNumber,
+                             @RequestParam(defaultValue = "0") int pageNumber,
                              @RequestParam(defaultValue = "10") int pageSize,
-                             @RequestParam(value = "kw", defaultValue = "") String kw,  // 타임리프와 매핑해보기 (학습)
-                             @RequestParam(required = false, defaultValue = "none") String category,
-                             @RequestParam(required = false, defaultValue = "none") String statuses) {
+                             @RequestParam(required = false, value = "kw") String kw,  // 타임리프와 매핑해보기 (학습)
+                             @RequestParam(required = false) String category,
+                             @RequestParam(required = false) String statuses) {
         // REFACTOR: 인자 클래스 DTO로 감싸기?
-        List<String> categories = List.of(category.split(","));
-        List<String> status = List.of(statuses.split(","));
-
-        List<QuizViewDTO> quizzes = quizService.findQuizzes(pageNumber, pageSize, kw, categories);
-        int totalPages = quizService.findAll().size(); // FIXME: 더 효율적으로 리팩토링 필요 -> JPA & Pageable
-        Paging paging = new Paging(pageNumber, (int) Math.ceil((double) totalPages / pageSize));
-
-        List<QuizViewDTO> quizzesToRemove = new ArrayList<>();
-
-        // 사용자가 로그인하지 않았을 때에도 quizzes 조회가 가능하도록
-        if (customUserDetails != null) {
-            quizzes.forEach(quiz -> {
-                Integer userId = customUserDetails.getUserId();
-                Boolean isSolved = submissionService.findById(userId, quiz.getQuizId());
-                quiz.setIsCorrect(isSolved);
-                System.out.println(userId + " " + quiz.getQuizId() + " " + isSolved);
-
-                if (!status.get(0).equals("none")
-                        && ((!status.contains("solved") && isSolved) || (!status.contains("unsolved") && !isSolved))) {
-                    quizzesToRemove.add(quiz);
-                }
-            });
-
-            quizzes.removeAll(quizzesToRemove);
+        if (category == null || category.isEmpty()) {
+            category = "none";
+        }
+        if (statuses == null || statuses.isEmpty()) {
+            statuses = "none";
         }
 
-        model.addAttribute("quizzes", quizzes);
+        List<String> categories = List.of(category.split(","));
+        List<String> status = List.of(statuses.split(","));
+        int userId = customUserDetails != null ? customUserDetails.getUserId() : 0;
+
+        List<QuizViewDTO> quizzes = quizService.findQuizzes(userId, kw, categories, status);
+        int totalElements = quizzes.size();
+        int totalPages = (int) Math.ceil((double) totalElements / pageSize);
+        if (totalPages == 0) totalPages = 1;
+
+        int start = pageNumber * pageSize;
+        int end = Math.min(start + pageSize, totalElements);
+        List<QuizViewDTO> pagedQuizzes = quizzes.subList(start, end);
+
+        Paging paging = new Paging(pageNumber, totalPages);
+
+        model.addAttribute("quizzes", pagedQuizzes);
         model.addAttribute("kw", kw);
         model.addAttribute("paging", paging);
         model.addAttribute("categories", Category.getCategories());
+
+        // 요청된 파라미터 그대로 버튼에 출력하기 위함
+        model.addAttribute("category", category);
+        model.addAttribute("statuses", statuses);
 
         return "quizList";
     }

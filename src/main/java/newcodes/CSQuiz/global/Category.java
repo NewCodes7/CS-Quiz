@@ -10,7 +10,8 @@ public enum Category {
     네트워크(2),
     데이터베이스(3),
     자료구조(4),
-    알고리즘(5);
+    알고리즘(5),
+    SW_신기술(6);
 
     Category(int id) {
         this.id = id;
