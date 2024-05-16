@@ -80,11 +80,12 @@
 
 <script th:inline="javascript">
     var blankSentence = /*[[${quiz.blankSentence}]]*/ '';
+    let blankIndex = 0;
 
     function replaceBlanks() {
         var modifiedSentence = blankSentence.replace(/\{\}/g, function(match, offset) {
-            var blankNumber = offset / 2 + 1;
-            return '<span class="bg-warning bg-gradient border rounded px-1" style="color: gray;">  ' + blankNumber + '  </span>'
+            blankIndex++;
+            return '<span class="bg-warning bg-gradient border rounded px-1" style="color: gray;">  ' + blankIndex + '  </span>'
         });
 
         document.getElementById('blankSentence').innerHTML = modifiedSentence;
