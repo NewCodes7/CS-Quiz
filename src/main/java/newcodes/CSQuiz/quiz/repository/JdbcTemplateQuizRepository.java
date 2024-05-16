@@ -249,7 +249,11 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
                     .referenceUrl(rs.getString("reference_url")) // Null 가능
                     .blankSentence(rs.getString("blank_sentence"))
                     .build();
-            return new QuizViewDTO(quiz);
+
+            QuizViewDTO quizViewDTO = new QuizViewDTO(quiz);
+            quizViewDTO.setIsCorrect(rs.getBoolean("solved"));
+
+            return quizViewDTO;
         };
     }
 
