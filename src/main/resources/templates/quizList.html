@@ -1,99 +1,120 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{common/fragments/config :: ConfigFragment}"></head>
+<style>
+    .inner-wrap {
+        background-color: rgb(255, 255, 255);
+        border: 0.0625rem solid rgb(215, 226, 235);
+        border-radius: 0.25rem;
+        overflow: hidden;
+        margin-left: 17%;
+        margin-right: 17%;
+        margin-bottom: 30px;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    .td-align {
+        text-align: center;
+    }
+</style>
 
 <body>
-<header th:replace="~{common/fragments/header :: HeaderFragment}"></header>
-<div class="container">
-    <div class="row my-3">
-        <div class="col-6">
-            <button type="button" id="create-btn" th:onclick="|location.href='@{/new-quiz}'|" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-2"></i>퀴즈 등록
-            </button>
-        </div>
-        <div class="col-6">
-            <div class="input-group">
-                <input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="검색어를 입력하세요">
-                <button class="btn btn-outline-secondary" type="button" id="btn_search">
-                    <i class="bi bi-search"></i>
+    <header th:replace="~{common/fragments/header :: HeaderFragment}"></header>
+    <div class="container">
+        <div class="row my-3">
+            <div class="col-6">
+                <button type="button" id="create-btn" th:onclick="|location.href='@{/new-quiz}'|" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>퀴즈 등록
                 </button>
+            </div>
+            <div class="col-6">
+                <div class="input-group">
+                    <input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="검색어를 입력하세요">
+                    <button class="btn btn-outline-secondary" type="button" id="btn_search">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col-6">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        문제 카테고리
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+                        <li th:each="category : ${categories}">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input category-checkbox" th:value="${category}" th:text="${category}" onchange="handleCheckboxChange()">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="solvedDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        풀이 여부
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="solvedDropdown">
+                        <li>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input statuses-checkbox" id="solved-true-checkbox" onchange="handleCheckboxChange()">
+                                <label class="form-check-label" for="solved-true-checkbox">푼 문제</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input statuses-checkbox" id="solved-false-checkbox" onchange="handleCheckboxChange()">
+                                <label class="form-check -label" for="solved-false-checkbox">안 푼 문제</label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row my-3">
-        <div class="col-6">
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    문제 카테고리
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
-                    <li th:each="category : ${categories}">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input category-checkbox" th:value="${category}" th:text="${category}" onchange="handleCheckboxChange()">
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="solvedDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    풀이 여부
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="solvedDropdown">
-                    <li>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input statuses-checkbox" id="solved-true-checkbox" onchange="handleCheckboxChange()">
-                            <label class="form-check-label" for="solved-true-checkbox">푼 문제</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input statuses-checkbox" id="solved-false-checkbox" onchange="handleCheckboxChange()">
-                            <label class="form-check -label" for="solved-false-checkbox">안 푼 문제</label>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
+    <div class="inner-wrap">
+        <table class="table table-hover">
+            <thead class="table-light">
+            <tr>
+                <th>상태</th>
+                <th>제목</th>
+                <th>유형</th>
+                <th>난이도</th>
+                <!--            <th>정답률</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item, iter : ${quizzes}">
+                <td class="td-align">
+                    <span th:if="${item.isCorrect}" th:text="'&#9989;'" th:style="'font-size: 1.1em;'"></span>
+                    <span th:unless="${item.isCorrect}"></span>
+                </td>
+                <td>
+                    <a class="table-active" th:href="@{/quizzes/{id}(id=${item.quizId})}" th:text="${item.questionText}" th:style="'color: inherit; text-decoration: none; font-size: 1.1em; font-weight: bold;'"></a>
+                </td>
+                <td class="td-align" th:switch="${item.categoryId}">
+                    <span th:case="1">운영체제</span>
+                    <span th:case="2">네트워크</span>
+                    <span th:case="3">데이터베이스</span>
+                    <span th:case="4">자료구조</span>
+                    <span th:case="5">알고리즘</span>
+                    <span th:case="6">SW 신기술</span>
+                    <span th:case="*">Unknown</span>
+                </td>
+                <td class="td-align" th:text="${item.difficulty}"></td>
+                <!--            <td th:if="${item.attemptCount != 0}" th:text="${#numbers.formatDecimal((item.correctCount / item.attemptCount * 100), 2)} + '%'"></td>-->
+                <!--            <td th:if="${item.attemptCount == 0}">아직 푼 사람이 없습니다!</td>-->
+            </tr>
+            </tbody>
+        </table>
     </div>
-</div>
-
-    <table class="table table-hover">
-        <thead class="table-light">
-        <tr>
-            <th>상태</th>
-            <th>제목</th>
-            <th>유형</th>
-            <th>난이도</th>
-            <th>정답률</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item, iter : ${quizzes}">
-            <td>
-                <span th:if="${item.isCorrect}" th:text="'&#9989;'" th:style="'font-size: 1.4em;'"></span>
-                <span th:unless="${item.isCorrect}"></span>
-            </td>
-            <td>
-                <a class="table-active" th:href="@{/quizzes/{id}(id=${item.quizId})}" th:text="${item.questionText}" th:style="'color: inherit; text-decoration: none; font-size: 1.1em; font-weight: bold;'"></a>
-            </td>
-            <td th:switch="${item.categoryId}">
-                <span th:case="1">운영체제</span>
-                <span th:case="2">네트워크</span>
-                <span th:case="3">데이터베이스</span>
-                <span th:case="4">자료구조</span>
-                <span th:case="5">알고리즘</span>
-                <span th:case="6">SW 신기술</span>
-                <span th:case="*">Unknown</span>
-            </td>
-            <td th:text="${item.difficulty}"></td>
-            <td th:if="${item.attemptCount != 0}" th:text="${#numbers.formatDecimal((item.correctCount / item.attemptCount * 100), 2)} + '%'"></td>
-            <td th:if="${item.attemptCount == 0}">아직 푼 사람이 없습니다!</td>
-        </tr>
-        </tbody>
-    </table>
 
     <!-- 페이징처리 시작 -->
     <div th:if="${!paging.isEmpty()}">
@@ -118,8 +139,6 @@
         </ul>
     </div>
     <!-- 페이징처리 끝 -->
-
-    <button type="button" class="btn btn-secondary" onclick="location.href='/logout'">로그아웃</button>
 
     <form th:action="@{/quizzes}" method="get" id="searchForm">
         <input type="hidden" id="kw" name="kw" th:value="${kw}">

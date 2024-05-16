@@ -60,6 +60,7 @@ public class QuizViewController {
         model.addAttribute("kw", kw);
         model.addAttribute("paging", paging);
         model.addAttribute("categories", Category.getCategories());
+        model.addAttribute("loggedIn", customUserDetails != null);
 
         // 요청된 파라미터 그대로 버튼에 출력하기 위함
         model.addAttribute("category", category);
