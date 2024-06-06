@@ -176,6 +176,9 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         sql = "DELETE FROM answers where quiz_id = ?";
         jdbcTemplate.update(sql, id);
 
+        sql = "DELETE FROM submissions where quiz_id = ?";
+        jdbcTemplate.update(sql, id);
+
         sql = "DELETE FROM quizzes where quiz_id = ?";
         jdbcTemplate.update(sql, id);
     }
