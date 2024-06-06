@@ -18,6 +18,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -28,6 +30,7 @@ public class WebSecurityConfig {
 
     private final TokenProvider tokenProvider;
     private final UserDetailService userService;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public WebSecurityCustomizer configure() {
@@ -41,6 +44,7 @@ public class WebSecurityConfig {
 
         http
             .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new CustomAccessDeniedHandlerFilter(accessDeniedHandler), ExceptionTranslationFilter.class)
             .authorizeHttpRequests(authorize ->
                     authorize
                             .requestMatchers("/login", "/signup", "/quizzes", "/").permitAll()

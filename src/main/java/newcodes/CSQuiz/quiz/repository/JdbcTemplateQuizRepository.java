@@ -170,7 +170,13 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
 
     @Override
     public void delete(int id) {
-        String sql = "DELETE FROM quizzes where quiz_id = ?";
+        String sql = "DELETE FROM answers where quiz_id = ?";
+        jdbcTemplate.update(sql, id);
+
+        sql = "DELETE FROM alternative_answers where answer_id = ?";
+        jdbcTemplate.update(sql, id);
+
+        sql = "DELETE FROM quizzes where quiz_id = ?";
         jdbcTemplate.update(sql, id);
     }
 

@@ -55,6 +55,7 @@ public class QuizService {
         return quizRepository.findAnswersById(id);
     }
 
+    @Transactional
     public void delete(int id) {
         quizRepository.delete(id);
     }
