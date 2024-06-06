@@ -22,6 +22,11 @@
 <!--                        </ul>-->
 <!--                    </li>-->
                 </ul>
+
+                <button type="button" id="create-btn" th:onclick="|location.href='@{/new-quiz}'|" class="btn btn-primary" style="margin-right: 10px">
+                    <i class="bi bi-plus-circle me-2"></i>퀴즈 등록
+                </button>
+
                 <form class="d-flex">
                     <!-- 사용자가 로그인한 경우 -->
                     <div th:if="${loggedIn}">
