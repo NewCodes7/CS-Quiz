@@ -84,10 +84,14 @@ public class QuizViewController {
     }
 
     private void handleQuizFound(Quiz quiz, CustomUserDetails customUserDetails, Model model) {
+
         int answerCounts = quizService.findAnswersById(quiz.getQuizId()).size();
         quiz.setAnswerCounts(answerCounts);
 
-        boolean isCorrect = submissionService.findById(customUserDetails.getUserId(), quiz.getQuizId());
+        boolean isCorrect = false;
+        if (customUserDetails != null) {
+            isCorrect = submissionService.findById(customUserDetails.getUserId(), quiz.getQuizId());
+        }
         QuizViewDTO quizViewDTO = new QuizViewDTO(quiz);
         quizViewDTO.setIsCorrect(isCorrect);
 

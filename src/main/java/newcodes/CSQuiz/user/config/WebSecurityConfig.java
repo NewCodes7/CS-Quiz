@@ -47,8 +47,7 @@ public class WebSecurityConfig {
             .authorizeHttpRequests(authorize ->
                     authorize
                             .requestMatchers("/login", "/signup", "/quizzes", "/").permitAll()
-//                            .requestMatchers(HttpMethod.GET, "/api/quizzes/*").permitAll()
-                            .requestMatchers("/quiz-requests", "/new-quiz").hasAnyRole("ADMIN", "USER")
+                            .requestMatchers(HttpMethod.GET, "/quizzes/*").permitAll()
                             .requestMatchers("/api/quizzes/*", "/quiz-requests/*/approve", "/quiz-requests/*/reject").hasRole("ADMIN")
                             .requestMatchers("/admin/**").hasRole("ADMIN")
                             .anyRequest().authenticated()
