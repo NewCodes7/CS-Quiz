@@ -80,6 +80,8 @@ public class QuizViewController {
                         () -> handleQuizNotFound(model)
                 );
 
+        model.addAttribute("loggedIn", customUserDetails != null);
+
         return "quiz";
     }
 
