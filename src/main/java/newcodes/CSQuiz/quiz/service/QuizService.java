@@ -1,5 +1,7 @@
 package newcodes.CSQuiz.quiz.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +11,12 @@ import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
 import newcodes.CSQuiz.quiz.domain.Answer;
 import newcodes.CSQuiz.quiz.domain.Quiz;
 import newcodes.CSQuiz.answer.dto.AnswerDTO;
+import newcodes.CSQuiz.quiz.domain.QuizUserRequest;
 import newcodes.CSQuiz.quiz.dto.QuizCreateRequest;
 import newcodes.CSQuiz.quiz.dto.QuizViewDTO;
 import newcodes.CSQuiz.quiz.dto.QuizUpdateRequest;
 import newcodes.CSQuiz.quiz.repository.QuizRepository;
+import newcodes.CSQuiz.quiz.repository.QuizUserRequestRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +25,28 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuizService {
 
     private final QuizRepository quizRepository;
+    private final QuizUserRequestRepository quizUserRequestRepository;
 
     @Transactional
     public Quiz saveQuizWithAnswers(QuizCreateRequest request) {
         Quiz quiz = request.getQuiz().toEntity();
 
         return quizRepository.save(quiz, createAnswerMap(request.getAnswers()));
+    }
+
+    @Transactional
+    public Quiz createQuizFromRequest(Long id) {
+        QuizUserRequest quizUserRequest = quizUserRequestRepository.findById(id);
+        ObjectMapper objectMapper = new ObjectMapper();
+        QuizCreateRequest quizCreateRequest = null;
+
+        try {
+            quizCreateRequest = objectMapper.readValue(quizUserRequest.getRequestBody(), QuizCreateRequest.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return quizRepository.save(quizCreateRequest.getQuiz().toEntity(), createAnswerMap(quizCreateRequest.getAnswers()));
     }
 
     private Map<Answer, List<AlternativeAnswer>> createAnswerMap(List<AnswerDTO> answerDTOs) {

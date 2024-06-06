@@ -21,7 +21,7 @@
                     <input type="text" class="form-control" placeholder="참고 링크(선택)" id="referenceUrl" th:value="${quiz.referenceUrl}">
                 </section>
                 <button th:if="${quiz.quizId} != null" type="button" id="modify-btn" class="btn btn-primary btn-sm">수정</button>
-                <button th:if="${quiz.quizId} == null" type="button" id="create-btn" class="btn btn-primary btn-sm">등록</button>
+                <button th:if="${quiz.quizId} == null" type="button" id="create-btn" class="btn btn-primary btn-sm" onclick="postDataToAPI()">등록</button>
             </article>
         </div>
     </div>

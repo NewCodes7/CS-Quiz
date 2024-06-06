@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -30,7 +31,6 @@ public class WebSecurityConfig {
 
     private final TokenProvider tokenProvider;
     private final UserDetailService userService;
-    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public WebSecurityCustomizer configure() {
@@ -44,11 +44,13 @@ public class WebSecurityConfig {
 
         http
             .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new CustomAccessDeniedHandlerFilter(accessDeniedHandler), ExceptionTranslationFilter.class)
             .authorizeHttpRequests(authorize ->
                     authorize
                             .requestMatchers("/login", "/signup", "/quizzes", "/").permitAll()
-                            .requestMatchers("/new-quiz", "/api/quizzes").hasRole("ADMIN")
+//                            .requestMatchers(HttpMethod.GET, "/api/quizzes/*").permitAll()
+                            .requestMatchers("/quiz-requests", "/new-quiz").hasAnyRole("ADMIN", "USER")
+                            .requestMatchers("/api/quizzes/*", "/quiz-requests/*/approve", "/quiz-requests/*/reject").hasRole("ADMIN")
+                            .requestMatchers("/admin/**").hasRole("ADMIN")
                             .anyRequest().authenticated()
             )
             .formLogin(formLogin ->

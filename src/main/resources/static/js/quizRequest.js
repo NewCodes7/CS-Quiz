@@ -46,7 +46,7 @@ function postDataToAPI() {
     };
 
     // API로 데이터를 전송하는 함수입니다.
-    fetch('/api/quizzes', {
+    fetch('/quiz-requests', {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
@@ -54,7 +54,7 @@ function postDataToAPI() {
         body: JSON.stringify(data)
     })
     .then(() => {
-        alert('등록 완료되었습니다.');
+        alert('퀴즈 등록을 요청했습니다. 검토 후 업로드될 예정입니다.');
         location.replace('/quizzes');
     })
     .catch(error => {
@@ -63,18 +63,19 @@ function postDataToAPI() {
     });
 }
 
-// createButton이 존재하고 클릭되었을 때 실행되는 이벤트 핸들러를 설정하는 함수입니다.
-function setupCreateButtonEventListener() {
-    const createButton = document.getElementById('create-btn');
-    if (createButton) {
-        createButton.addEventListener('click', event => {
-            postDataToAPI();
-        });
-    }
-}
-
-// 함수 호출을 통해 기능을 실행합니다.
-setupCreateButtonEventListener();
+// // createButton이 존재하고 클릭되었을 때 실행되는 이벤트 핸들러를 설정하는 함수입니다.
+// function setupCreateButtonEventListener() {
+//     const createButton = document.getElementById('create-btn');
+//     if (createButton) {
+//         createButton.addEventListener('click', event => {
+//             console.log('create button clicked');
+//             postDataToAPI();
+//         });
+//     }
+// }
+//
+// // 함수 호출을 통해 기능을 실행합니다.
+// setupCreateButtonEventListener();
 
 // {}로 감싸진 단어를 추출하는 함수
 function extractWordsInBraces(text) {
