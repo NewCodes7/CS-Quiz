@@ -31,11 +31,14 @@ function postDataToAPI() {
 
     const realBlankSentence = blankSentence.value.replace(regex, '{}');
 
+    const categoryId = document.getElementById('categoryId');
+    const difficulty = document.getElementById('difficulty');
+
     const data = {
         quiz: {
-            categoryId: parseInt(document.getElementById('categoryId').value),
+            categoryId: parseInt(categoryId.options[categoryId.selectedIndex].value),
             questionText: document.getElementById('questionText').value,
-            difficulty: document.getElementById('difficulty').value,
+            difficulty: difficulty.options[difficulty.selectedIndex].value,
             referenceUrl: referenceUrl,
             blankSentence: realBlankSentence
         },

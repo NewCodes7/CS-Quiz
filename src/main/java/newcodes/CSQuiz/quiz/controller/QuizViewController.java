@@ -114,6 +114,8 @@ public class QuizViewController {
             model.addAttribute("quiz", quiz);
         }
 
+        model.addAttribute("categories", Category.getCategoriesWithIndex());
+
         return "newQuiz";
     }
 }

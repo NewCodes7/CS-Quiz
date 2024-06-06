@@ -16,8 +16,23 @@
                 </header>
                 <section class="mb-5">
                     <textarea class="form-control h-25" rows="10" placeholder="빈칸이 포함된 문장. 빈칸은 {}으로 감싸주세요!" id="blankSentence" th:text="${quiz.blankSentence}"></textarea>
-                    <input type="text" class="form-control" placeholder="카테고리 id" id="categoryId" th:value="${quiz.categoryId}">
-                    <input type="text" class="form-control" placeholder="어려움 정도(브론즈, 실버, 골드)" id="difficulty" th:value="${quiz.difficulty}">
+<!--                    <input type="text" class="form-control" placeholder="카테고리 id" id="categoryId" th:value="${quiz.categoryId}">-->
+
+                    <select class="form-control" id="categoryId">
+                        <option value="" disabled selected>문제 유형을 선택하세요!</option>
+                        <option th:each="entry : ${categories}"
+                                th:text="${entry.value}"
+                                th:value="${entry.key}">카테고리 선택</option>
+                    </select>
+
+                    <select class="form-control" id="difficulty">
+                        <option value="" disabled selected>문제 난이도를 선택하세요!</option>
+                        <option value="브론즈">브론즈(쉬움)</option>
+                        <option value="실버">실버(보통)</option>
+                        <option value="골드">골드(어려움)</option>
+                    </select>
+
+<!--                    <input type="text" class="form-control" placeholder="어려움 정도(브론즈, 실버, 골드)" id="difficulty" th:value="${quiz.difficulty}">-->
                     <input type="text" class="form-control" placeholder="참고 링크(선택)" id="referenceUrl" th:value="${quiz.referenceUrl}">
                 </section>
                 <button th:if="${quiz.quizId} != null" type="button" id="modify-btn" class="btn btn-primary btn-sm">수정</button>

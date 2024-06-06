@@ -2,6 +2,7 @@ package newcodes.CSQuiz.global;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Getter;
 
@@ -25,5 +26,10 @@ public enum Category {
         return Arrays.stream(Category.values())
                 .map(Category::name)
                 .collect(Collectors.toList());
+    }
+
+    public static Map<Integer, String> getCategoriesWithIndex() {
+        return Arrays.stream(Category.values())
+                .collect(Collectors.toMap(Category::getId, Category::name));
     }
 }
