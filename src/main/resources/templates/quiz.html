@@ -51,8 +51,11 @@
                                 <input type="text" th:name="'userAnswers[' + ${count} + ']'" class="form-control" th:placeholder="${count} + 1 + '번째 정답을 입력하세요!'" />
                             </div>
                         </div>
-                        <div class="my-3 text-center">
+                        <div class="my-3 text-center" th:if="${loggedIn}">
                             <button type="submit" class="btn btn-primary btn-block px-5">제출</button>
+                        </div>
+                        <div class="my-3 text-center" th:unless="${loggedIn}">
+                            <button type="button" class="btn btn-secondary" onclick="location.href='/login'">로그인</button>
                         </div>
                     </form>
                 </section>
