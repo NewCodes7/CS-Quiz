@@ -41,48 +41,49 @@ CS Quiz는 빈칸 문제를 통해 컴퓨터 과학 기초 지식 학습을 돕�
 
 ### 기초적인 CS 빈칸 문제를 풀어보세요!
 
+> 모든 빈칸이 맞았다면 정답 처리합니다. 
+
 <img width="1424" alt="Untitled 5" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/4ebccc49-47bb-4317-b6fa-71dd1eb0324e">
 
-> 빈칸 중 하나라도 틀렸다면 오답 처리합니다.
+- 틀린 경우
 
-<img width="677" alt="Untitled 6" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/2a8ea722-acb4-4000-a68b-3a97830799f9">
+  <img width="677" alt="Untitled 6" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/2a8ea722-acb4-4000-a68b-3a97830799f9">
 
-> 모든 빈칸이 맞았다면 정답 처리합니다.
+- 맞은 경우
 
-<img width="696" alt="Untitled 7" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/4dccd4b8-4908-4b98-849d-88319105f339">
+  <img width="696" alt="Untitled 7" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/4dccd4b8-4908-4b98-849d-88319105f339">
 
-- 한글이 아닌 영어로 입력해도 정답 처리합니다. (ex. deadlock)
-- 띄어쓰기, 대문자, 소문자를 구분하지 않습니다. (ex. Deadlock)
-- 하나의 정답에 대해 여러 복수 정답이 존재합니다. (ex. 데드락, 교착상태)
+  - 한글이 아닌 영어로 입력해도 정답 처리합니다. (ex. deadlock)
+  - 띄어쓰기, 대문자, 소문자를 구분하지 않습니다. (ex. Deadlock)
+  - 하나의 정답에 대해 여러 복수 정답이 존재합니다. (ex. 데드락, 교착상태)
 
 ### CS 문제를 추가해보세요!
 
-<img width="962" alt="Untitled 8" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/188b4f19-a85c-4f98-ad05-ea6c014c5c06">
-
 > 새로운 CS 문제를 제안할 수 있습니다. 관리자의 검토가 완료되면 업로드됩니다.
 
+<img width="962" alt="Untitled 8" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/188b4f19-a85c-4f98-ad05-ea6c014c5c06">
 
 ## 💫 부가 기능
 
 ### 풀이 기록이 저장돼요!
 
-<img width="1420" alt="Untitled 9" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/63fba967-9060-4e34-81ef-86025ddad33f">
-
 > 로그인을 하면 푼 문제가 저장됩니다.
+
+<img width="1420" alt="Untitled 9" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/63fba967-9060-4e34-81ef-86025ddad33f">
 
 ### 원하는 문제를 찾을 수 있어요!
 
-<img width="1421" alt="Untitled 2" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/ee9afb99-dcb9-4736-9a9a-0cf7a6e42019">
-
 > 문제 유형에 따라 문제를 분류합니다.
 
-<img width="1415" alt="Untitled 3" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/74e75ad2-3a97-4db7-86b6-dd03d321c1c0">
+<img width="1421" alt="Untitled 2" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/ee9afb99-dcb9-4736-9a9a-0cf7a6e42019">
 
 > 풀이 상태에 따라 문제를 분류합니다.
 
-<img width="1417" alt="Untitled 4" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/5a1f483c-0a3f-41fe-8a61-8a38deb55acc">
+<img width="1415" alt="Untitled 3" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/74e75ad2-3a97-4db7-86b6-dd03d321c1c0">
 
 > 원하는 문제를 검색할 수 있습니다.
+
+<img width="1417" alt="Untitled 4" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/5a1f483c-0a3f-41fe-8a61-8a38deb55acc">
 
 ## 🗓️ 기간
 
