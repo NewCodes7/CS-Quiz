@@ -1,18 +1,10 @@
-# CS Quiz
-
-> 빈칸 문제를 통해 컴퓨터 과학 기초 지식 학습을 돕는 서비스입니다.
+<div align="center">
+  <h1>CS Quiz</h1>
 
 <img width="1419" alt="Untitled" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/51c85ce4-ffea-4e59-9133-14c92fdaa10a">
-
 <img width="1421" alt="Untitled 1" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/bb861056-7efd-4c75-9a80-320c7b72b52a">
 
-
-## 🔗 [프로젝트 노션](https://www.notion.so/CS-Quiz-9eb241a1943c4f1eb09d6515fe652984?pvs=21)
-
-- [문제 해결 경험](https://same-treatment-dcb.notion.site/684b91f13ebf4ab1b9bd1435d476c32b)
-- [기획서](https://same-treatment-dcb.notion.site/7d085a060d9044de8bd5d8438513ff92?pvs=4)
-- [데이터베이스 설계](https://same-treatment-dcb.notion.site/81c122573dbc408fb1f940ed4714f228?pvs=4)
-- [api 명세서](https://same-treatment-dcb.notion.site/api-e1c0e207cc144b06bc6f216571627af4?pvs=4)
+</div>
 
 ## 📋 목차
 
@@ -32,21 +24,30 @@
   * [시스템 아키텍처](#시스템-아키텍처)
 <!-- TOC -->
 
+## 🔗 [프로젝트 노션](https://www.notion.so/CS-Quiz-9eb241a1943c4f1eb09d6515fe652984?pvs=21)
+
+- [문제 해결 경험](https://same-treatment-dcb.notion.site/684b91f13ebf4ab1b9bd1435d476c32b)
+- [기획서](https://same-treatment-dcb.notion.site/7d085a060d9044de8bd5d8438513ff92?pvs=4)
+- [데이터베이스 설계](https://same-treatment-dcb.notion.site/81c122573dbc408fb1f940ed4714f228?pvs=4)
+- [api 명세서](https://same-treatment-dcb.notion.site/api-e1c0e207cc144b06bc6f216571627af4?pvs=4)
+
+## ✍ 프로젝트 개요
+
+CS Quiz는 빈칸 문제를 통해 컴퓨터 과학 기초 지식 학습을 돕는 서비스입니다. 방대한 CS 지식 중에서 무엇을 알고 모르는지 알 수 있습니다. 
+
+<br />
+
 ## 🎯 핵심 기능
 
 ### 기초적인 CS 빈칸 문제를 풀어보세요!
 
 <img width="1424" alt="Untitled 5" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/4ebccc49-47bb-4317-b6fa-71dd1eb0324e">
 
-```
-빈칸 중 하나라도 틀렸다면 오답 처리합니다.
-```
+> 빈칸 중 하나라도 틀렸다면 오답 처리합니다.
 
 <img width="677" alt="Untitled 6" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/2a8ea722-acb4-4000-a68b-3a97830799f9">
 
-```
-모든 빈칸이 맞았다면 정답 처리합니다.
-```
+> 모든 빈칸이 맞았다면 정답 처리합니다.
 
 <img width="696" alt="Untitled 7" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/4dccd4b8-4908-4b98-849d-88319105f339">
 
@@ -58,10 +59,7 @@
 
 <img width="962" alt="Untitled 8" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/188b4f19-a85c-4f98-ad05-ea6c014c5c06">
 
-```
-새로운 CS 문제를 제안할 수 있습니다. 
-관리자의 검토가 완료되면 업로드됩니다.
-```
+> 새로운 CS 문제를 제안할 수 있습니다. 관리자의 검토가 완료되면 업로드됩니다.
 
 
 ## 💫 부가 기능
@@ -70,29 +68,21 @@
 
 <img width="1420" alt="Untitled 9" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/63fba967-9060-4e34-81ef-86025ddad33f">
 
-```
-로그인을 하면 푼 문제가 저장됩니다.
-```
+> 로그인을 하면 푼 문제가 저장됩니다.
 
 ### 원하는 문제를 찾을 수 있어요!
 
 <img width="1421" alt="Untitled 2" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/ee9afb99-dcb9-4736-9a9a-0cf7a6e42019">
 
-```
-문제 유형에 따라 문제를 분류합니다.
-```
+> 문제 유형에 따라 문제를 분류합니다.
 
 <img width="1415" alt="Untitled 3" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/74e75ad2-3a97-4db7-86b6-dd03d321c1c0">
 
-```
-풀이 상태에 따라 문제를 분류합니다.
-```
+> 풀이 상태에 따라 문제를 분류합니다.
 
 <img width="1417" alt="Untitled 4" src="https://github.com/NewCodes7/CS-Quiz/assets/123712285/5a1f483c-0a3f-41fe-8a61-8a38deb55acc">
 
-```
-원하는 문제를 검색할 수 있습니다.
-```
+> 원하는 문제를 검색할 수 있습니다.
 
 ## 🗓️ 기간
 
