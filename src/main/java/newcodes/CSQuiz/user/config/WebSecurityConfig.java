@@ -70,7 +70,6 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    // 이거 추가하니 됐다 ㅠㅠ
     @Bean
     public AuthenticationManager authenticationManager(
             UserDetailService userService,

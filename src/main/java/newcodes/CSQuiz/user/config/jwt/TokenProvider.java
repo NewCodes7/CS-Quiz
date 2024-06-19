@@ -53,7 +53,6 @@ public class TokenProvider {
         }
     }
 
-
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
         Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));

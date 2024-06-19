@@ -24,6 +24,6 @@ public class TokenService {
         Integer userId = refreshTokenService.findByRefreshToken(refreshToken).getUserId();
         User user = userService.findById(userId);
 
-        return tokenProvider.generateToken(user, Duration.ofHours(2));
+        return tokenProvider.generateToken(user, Duration.ofMinutes(30));
     }
 }
