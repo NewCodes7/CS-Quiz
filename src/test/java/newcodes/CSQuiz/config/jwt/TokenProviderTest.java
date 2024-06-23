@@ -58,14 +58,14 @@ class TokenProviderTest {
 
     @DisplayName("validToken(): 만료된 토큰인 경우에 유효성 검증에 실패한다.")
     @Test
-    void validToken_invalidToken() {
+    void isValidToken_invalidToken() {
         // given
         JwtFactory jwtFactory = new JwtFactory(null, null, new Date(new Date().getTime() - Duration.ofDays(7).toMillis()), null);
 
         String token = jwtFactory.createToken(jwtProperties);
 
         // when
-        boolean result = tokenProvider.validToken(token);
+        boolean result = tokenProvider.isValidToken(token);
 
         // then
         assertThat(result).isFalse();
@@ -74,13 +74,13 @@ class TokenProviderTest {
 
     @DisplayName("validToken(): 유효한 토큰인 경우에 유효성 검증에 성공한다.")
     @Test
-    void validToken_validToken() {
+    void validToken_isValidToken() {
         // given
         String token = JwtFactory.withDefaultValues()
                 .createToken(jwtProperties);
 
         // when
-        boolean result = tokenProvider.validToken(token);
+        boolean result = tokenProvider.isValidToken(token);
 
         // then
         assertThat(result).isTrue();
@@ -112,7 +112,7 @@ class TokenProviderTest {
         String token = jwtFactory.createToken(jwtProperties);
 
         // when
-        Long userIdByToken = tokenProvider.getUserId(token);
+        Integer userIdByToken = tokenProvider.getUserId(token);
 
         // then
         assertThat(userIdByToken).isEqualTo(userId);

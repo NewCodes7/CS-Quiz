@@ -17,13 +17,12 @@ public class TokenService {
 
     public String createNewAccessToken(String refreshToken) {
         // 토큰 유효성 검사에 실패하면 예외 발생
-        if(!tokenProvider.validToken(refreshToken)) {
+        if(!tokenProvider.isValidToken(refreshToken)) {
             throw new IllegalArgumentException("Unexpected token");
         }
 
         Integer userId = refreshTokenService.findByRefreshToken(refreshToken).getUserId();
-        User user = userService.findById(userId);
 
-        return tokenProvider.generateToken(user, Duration.ofMinutes(30));
+        return tokenProvider.generateToken(userId, Duration.ofMinutes(30));
     }
 }

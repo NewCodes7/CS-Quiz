@@ -1,26 +1,32 @@
-package newcodes.CSQuiz.user.config;
+package newcodes.CSQuiz.user.config.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import newcodes.CSQuiz.user.config.jwt.TokenProvider;
+import newcodes.CSQuiz.user.service.UserDetailService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@RequiredArgsConstructor
+@Component
 @Slf4j
-public class TokenAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final TokenProvider tokenProvider;
     private final static String HEADER_AUTHORIZATION = "Authorization";
     private final static String TOKEN_PREFIX = "Bearer ";
+
+    private final TokenProvider tokenProvider;
+    private final UserDetailService userDetailService;
+
+    public JwtAuthenticationFilter(TokenProvider tokenProvider, UserDetailService userDetailService) {
+        this.tokenProvider = tokenProvider;
+        this.userDetailService = userDetailService;
+    }
 
     @Override
     protected void doFilterInternal(
@@ -33,7 +39,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
         String token = getAccessToken(authorizationHeader);
 
-        if (tokenProvider.validToken(token)) {
+        log.info("dofiter 내 토큰: {}", token);
+
+        if (tokenProvider.isValidToken(token)) {
+            log.info("authentication이 SecurityContextHolder에 저장");
             Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

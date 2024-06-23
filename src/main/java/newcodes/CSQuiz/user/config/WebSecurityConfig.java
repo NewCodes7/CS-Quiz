@@ -2,9 +2,11 @@ package newcodes.CSQuiz.user.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import newcodes.CSQuiz.user.config.jwt.JwtAuthenticationFilter;
+import newcodes.CSQuiz.user.config.jwt.JwtLoginFilter;
 import newcodes.CSQuiz.user.config.jwt.TokenProvider;
+import newcodes.CSQuiz.user.repository.JdbcTemplateUserRepository;
 import newcodes.CSQuiz.user.service.UserDetailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,15 +14,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -31,6 +30,8 @@ public class WebSecurityConfig {
 
     private final TokenProvider tokenProvider;
     private final UserDetailService userService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JdbcTemplateUserRepository jdbcTemplateUserRepository;
 
     @Bean
     public WebSecurityCustomizer configure() {
@@ -43,15 +44,16 @@ public class WebSecurityConfig {
         log.info("securityFilterChain 실행");
 
         http
-            .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize ->
                     authorize
-                            .requestMatchers("/login", "/signup", "/quizzes", "/").permitAll()
+                            .requestMatchers("/login", "/signup", "/quizzes", "/", "/static/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/quizzes/*").permitAll()
                             .requestMatchers("/api/quizzes/*", "/quiz-requests/*/approve", "/quiz-requests/*/reject").hasRole("ADMIN")
                             .requestMatchers("/admin/**").hasRole("ADMIN")
                             .anyRequest().authenticated()
             )
+//            .addFilterBefore(new JwtLoginFilter(authenticationManager(userService, bCryptPasswordEncoder()), tokenProvider, jdbcTemplateUserRepository), UsernamePasswordAuthenticationFilter.class)
+//            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .formLogin(formLogin ->
                     formLogin
                             .loginPage("/login")

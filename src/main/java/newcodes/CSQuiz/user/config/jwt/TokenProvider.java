@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.user.domain.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,35 +21,40 @@ import java.util.Set;
 @Service
 public class TokenProvider {
 
-    private final JwtProperties jwtProperties;
+    @Value("${jwt.secret.key}")
+    private String jwt_secret_key;
 
-    public String generateToken(User user, Duration expiredAt) {
+    @Value("${jwt.issuer}")
+    private String jwt_issuer;
+
+    public String generateToken(Integer userId, Duration expiredAt) {
         Date now = new Date();
-        return makeToken(new Date(now.getTime() + expiredAt.toMillis()), user);
+        return makeToken(new Date(now.getTime() + expiredAt.getSeconds()), userId);
     }
 
-    private String makeToken(Date expiry, User user) {
+    private String makeToken(Date expiry, Integer userId) {
         Date now = new Date();
 
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setIssuer(jwtProperties.getIssuer())
+                .setIssuer(jwt_issuer)
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-                .setSubject(user.getEmail())
-                .claim("id", user.getUser_id())
-                .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
+                .setSubject(String.valueOf(userId))
+//                .claim("id", user.getUser_id()) // id가 필요해??
+                .signWith(SignatureAlgorithm.HS256, jwt_secret_key)
                 .compact();
     }
 
-    public boolean validToken(String token) {
+    public boolean isValidToken(String token) {
         try {
             Jwts.parser()
-                    .setSigningKey(jwtProperties.getSecretKey())
+                    .setSigningKey(jwt_secret_key)
                     .parseClaimsJws(token);
 
             return true;
         } catch (Exception e) {
+            System.out.println("isValidToken 에러 발생");
             return false;
         }
     }
@@ -61,14 +67,14 @@ public class TokenProvider {
                 (), "", authorities), token, authorities);
     }
 
-    public Long getUserId(String token) {
+    public Integer getUserId(String token) {
         Claims claims = getClaims(token);
-        return claims.get("id", Long.class);
+        return claims.get("id", Integer.class);
     }
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(jwtProperties.getSecretKey())
+                .setSigningKey(jwt_secret_key)
                 .parseClaimsJws(token)
                 .getBody();
     }
