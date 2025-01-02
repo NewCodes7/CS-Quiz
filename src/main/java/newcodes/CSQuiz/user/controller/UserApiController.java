@@ -2,13 +2,11 @@ package newcodes.CSQuiz.user.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.user.dto.AddUserRequest;
 import newcodes.CSQuiz.user.dto.CustomUserDetails;
 import newcodes.CSQuiz.user.service.TokenBlacklistService;
 import newcodes.CSQuiz.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;

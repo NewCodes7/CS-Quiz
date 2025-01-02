@@ -1,22 +1,20 @@
 package newcodes.CSQuiz.quiz.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.answer.service.SubmissionService;
 import newcodes.CSQuiz.global.Category;
 import newcodes.CSQuiz.quiz.domain.Quiz;
-import newcodes.CSQuiz.user.dto.CustomUserDetails;
 import newcodes.CSQuiz.quiz.dto.Paging;
 import newcodes.CSQuiz.quiz.dto.QuizViewDTO;
 import newcodes.CSQuiz.quiz.service.QuizService;
+import newcodes.CSQuiz.user.dto.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequiredArgsConstructor
@@ -48,7 +46,9 @@ public class QuizViewController {
         List<QuizViewDTO> quizzes = quizService.findQuizzes(userId, kw, categories, status);
         int totalElements = quizzes.size();
         int totalPages = (int) Math.ceil((double) totalElements / pageSize);
-        if (totalPages == 0) totalPages = 1;
+        if (totalPages == 0) {
+            totalPages = 1;
+        }
 
         int start = pageNumber * pageSize;
         int end = Math.min(start + pageSize, totalElements);

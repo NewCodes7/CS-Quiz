@@ -1,6 +1,11 @@
 package newcodes.CSQuiz.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 import newcodes.CSQuiz.config.jwt.JwtFactory;
 import newcodes.CSQuiz.user.config.jwt.JwtProperties;
 import newcodes.CSQuiz.user.domain.RefreshToken;
@@ -20,12 +25,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Map;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -36,18 +35,14 @@ class TokenApiControllerTest {
 
     @Autowired
     protected ObjectMapper objectMapper;
-
-    @Autowired
-    private WebApplicationContext context;
-
     @Autowired
     JwtProperties jwtProperties;
-
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     RefreshTokenRepository refreshTokenRepository;
+    @Autowired
+    private WebApplicationContext context;
 
     @BeforeEach
     public void mockMvcSetUp() {

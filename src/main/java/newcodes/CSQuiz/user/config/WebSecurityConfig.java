@@ -3,7 +3,6 @@ package newcodes.CSQuiz.user.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import newcodes.CSQuiz.user.config.jwt.JwtAuthenticationFilter;
-import newcodes.CSQuiz.user.config.jwt.JwtLoginFilter;
 import newcodes.CSQuiz.user.config.jwt.TokenProvider;
 import newcodes.CSQuiz.user.repository.JdbcTemplateUserRepository;
 import newcodes.CSQuiz.user.service.UserDetailService;
@@ -20,7 +19,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -44,30 +42,31 @@ public class WebSecurityConfig {
         log.info("securityFilterChain 실행");
 
         http
-            .authorizeHttpRequests(authorize ->
-                    authorize
-                            .requestMatchers("/login", "/signup", "/quizzes", "/", "/static/**").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/quizzes/*").permitAll()
-                            .requestMatchers("/api/quizzes/*", "/quiz-requests/*/approve", "/quiz-requests/*/reject").hasRole("ADMIN")
-                            .requestMatchers("/admin/**").hasRole("ADMIN")
-                            .anyRequest().authenticated()
-            )
+                .authorizeHttpRequests(authorize ->
+                        authorize
+                                .requestMatchers("/login", "/signup", "/quizzes", "/", "/static/**", "user").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/quizzes/*").permitAll()
+                                .requestMatchers("/api/quizzes/*", "/quiz-requests/*/approve",
+                                        "/quiz-requests/*/reject").hasRole("ADMIN")
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .anyRequest().authenticated()
+                )
 //            .addFilterBefore(new JwtLoginFilter(authenticationManager(userService, bCryptPasswordEncoder()), tokenProvider, jdbcTemplateUserRepository), UsernamePasswordAuthenticationFilter.class)
 //            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .formLogin(formLogin ->
-                    formLogin
-                            .loginPage("/login")
-                            .usernameParameter("email")
-                            .passwordParameter("password_hashed")
-                            .defaultSuccessUrl("/quizzes")
-                            .failureHandler(loginFailHandler())
-            )
-            .logout(logout ->
-                    logout
-                            .logoutSuccessUrl("/login")
-                            .invalidateHttpSession(true)
-            )
-            .csrf(AbstractHttpConfigurer::disable);
+                .formLogin(formLogin ->
+                        formLogin
+                                .loginPage("/login")
+                                .usernameParameter("email")
+                                .passwordParameter("password_hashed")
+                                .defaultSuccessUrl("/quizzes")
+                                .failureHandler(loginFailHandler())
+                )
+                .logout(logout ->
+                        logout
+                                .logoutSuccessUrl("/login")
+                                .invalidateHttpSession(true)
+                )
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
@@ -89,7 +88,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public LoginFailHandler loginFailHandler(){
+    public LoginFailHandler loginFailHandler() {
         return new LoginFailHandler();
     }
 }

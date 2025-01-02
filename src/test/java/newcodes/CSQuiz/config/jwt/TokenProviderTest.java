@@ -1,6 +1,11 @@
 package newcodes.CSQuiz.config.jwt;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.jsonwebtoken.Jwts;
+import java.time.Duration;
+import java.util.Date;
+import java.util.Map;
 import newcodes.CSQuiz.user.config.jwt.JwtProperties;
 import newcodes.CSQuiz.user.config.jwt.TokenProvider;
 import newcodes.CSQuiz.user.domain.User;
@@ -11,13 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.time.Duration;
-import java.util.Date;
-import java.util.Map;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -44,7 +43,7 @@ class TokenProviderTest {
         User testUser = userRepository.save(user);
 
         // when
-        String token = tokenProvider.generateToken(testUser, Duration.ofDays(14));
+        String token = tokenProvider.generateToken(testUser.getUser_id(), Duration.ofDays(14));
 
         // then
         int userId = Jwts.parser()
@@ -60,7 +59,8 @@ class TokenProviderTest {
     @Test
     void isValidToken_invalidToken() {
         // given
-        JwtFactory jwtFactory = new JwtFactory(null, null, new Date(new Date().getTime() - Duration.ofDays(7).toMillis()), null);
+        JwtFactory jwtFactory = new JwtFactory(null, null,
+                new Date(new Date().getTime() - Duration.ofDays(7).toMillis()), null);
 
         String token = jwtFactory.createToken(jwtProperties);
 

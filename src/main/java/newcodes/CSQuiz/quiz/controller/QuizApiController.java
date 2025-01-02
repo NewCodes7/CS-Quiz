@@ -3,10 +3,10 @@ package newcodes.CSQuiz.quiz.controller;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import newcodes.CSQuiz.quiz.domain.Quiz;
 import newcodes.CSQuiz.quiz.dto.QuizCreateRequest;
 import newcodes.CSQuiz.quiz.dto.QuizUpdateRequest;
 import newcodes.CSQuiz.quiz.service.QuizService;
-import newcodes.CSQuiz.quiz.domain.Quiz;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -66,7 +66,7 @@ public class QuizApiController {
     // TODO: 문제, 정답 업데이트 (QuizView와 연계)
     @PutMapping("/api/quizzes/{id}")
     public ResponseEntity<Quiz> updateQuiz(@PathVariable int id,
-                                                 @RequestBody QuizUpdateRequest request) {
+                                           @RequestBody QuizUpdateRequest request) {
         Quiz updatedQuiz = quizService.update(id, request);
 
         return ResponseEntity.ok()

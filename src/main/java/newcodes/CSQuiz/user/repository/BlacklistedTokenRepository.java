@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 import newcodes.CSQuiz.user.domain.BlacklistedToken;
-import newcodes.CSQuiz.user.domain.RefreshToken;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;

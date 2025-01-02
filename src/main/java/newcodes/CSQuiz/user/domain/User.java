@@ -1,6 +1,5 @@
 package newcodes.CSQuiz.user.domain;
 
-import java.util.HashSet;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +14,5 @@ public class User {
     private String password_hashed;
     private String registration_date;
     private String username;
-
     private Set<Role> roles;
 }

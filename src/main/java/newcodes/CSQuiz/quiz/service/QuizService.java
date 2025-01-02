@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import newcodes.CSQuiz.answer.dto.AnswerDTO;
 import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
 import newcodes.CSQuiz.quiz.domain.Answer;
 import newcodes.CSQuiz.quiz.domain.Quiz;
-import newcodes.CSQuiz.answer.dto.AnswerDTO;
 import newcodes.CSQuiz.quiz.domain.QuizUserRequest;
 import newcodes.CSQuiz.quiz.dto.QuizCreateRequest;
-import newcodes.CSQuiz.quiz.dto.QuizViewDTO;
 import newcodes.CSQuiz.quiz.dto.QuizUpdateRequest;
+import newcodes.CSQuiz.quiz.dto.QuizViewDTO;
 import newcodes.CSQuiz.quiz.repository.QuizRepository;
 import newcodes.CSQuiz.quiz.repository.QuizUserRequestRepository;
 import org.springframework.stereotype.Service;
@@ -46,7 +46,8 @@ public class QuizService {
             throw new RuntimeException(e);
         }
 
-        return quizRepository.save(quizCreateRequest.getQuiz().toEntity(), createAnswerMap(quizCreateRequest.getAnswers()));
+        return quizRepository.save(quizCreateRequest.getQuiz().toEntity(),
+                createAnswerMap(quizCreateRequest.getAnswers()));
     }
 
     private Map<Answer, List<AlternativeAnswer>> createAnswerMap(List<AnswerDTO> answerDTOs) {

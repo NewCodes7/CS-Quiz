@@ -1,16 +1,15 @@
 package newcodes.CSQuiz.config.jwt;
 
+import static java.util.Collections.emptyMap;
+
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
 import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
 import lombok.Builder;
 import newcodes.CSQuiz.user.config.jwt.JwtProperties;
-
-import static java.util.Collections.emptyMap;
 
 public class JwtFactory {
 

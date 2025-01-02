@@ -2,16 +2,15 @@ package newcodes.CSQuiz.quiz.repository;
 
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
+import newcodes.CSQuiz.global.Category;
 import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
 import newcodes.CSQuiz.quiz.domain.Answer;
-import newcodes.CSQuiz.global.Category;
 import newcodes.CSQuiz.quiz.domain.Quiz;
 import newcodes.CSQuiz.quiz.dto.QuizViewDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -71,7 +70,8 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
             // 대안 답 저장
             for (AlternativeAnswer alternativeAnswer : answers.get(answer)) {
                 jdbcTemplate.update(connection -> {
-                    PreparedStatement pstmt = connection.prepareStatement(alternativeAnswerSql, new String[]{"alternative_id"});
+                    PreparedStatement pstmt = connection.prepareStatement(alternativeAnswerSql,
+                            new String[]{"alternative_id"});
                     pstmt.setInt(1, answerId);
                     pstmt.setString(2, alternativeAnswer.getAlternativeText());
                     return pstmt;
@@ -83,8 +83,8 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
     }
 
     /*
-    * 옵션: 페이징(LIMIT), 키워드(WHERE), 카테고리(WHERE), (풀이 여부)
-    */
+     * 옵션: 페이징(LIMIT), 키워드(WHERE), 카테고리(WHERE), (풀이 여부)
+     */
     public List<QuizViewDTO> findQuizzes(int userId, String kw, List<String> categories, List<String> statuses) {
         String sql = "SELECT q.*, "
                 + "(CASE "
@@ -161,7 +161,8 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         Map<Answer, List<AlternativeAnswer>> answers = new HashMap<>();
         for (Answer answer : result) {
             int answerId = answer.getAnswerId();
-            List<AlternativeAnswer> alternativeAnswers = jdbcTemplate.query(alternativeAnswerSql, alternativeAnswerRowMapper(), answerId);
+            List<AlternativeAnswer> alternativeAnswers = jdbcTemplate.query(alternativeAnswerSql,
+                    alternativeAnswerRowMapper(), answerId);
             answers.put(answer, alternativeAnswers);
         }
 
@@ -223,7 +224,8 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
             // 대안 답 저장
             for (AlternativeAnswer alternativeAnswer : answers.get(answer)) {
                 jdbcTemplate.update(connection -> {
-                    PreparedStatement pstmt = connection.prepareStatement(alternativeAnswerSql, new String[]{"alternative_id"});
+                    PreparedStatement pstmt = connection.prepareStatement(alternativeAnswerSql,
+                            new String[]{"alternative_id"});
                     pstmt.setInt(1, answerId);
                     pstmt.setString(2, alternativeAnswer.getAlternativeText());
                     return pstmt;

@@ -1,14 +1,12 @@
 package newcodes.CSQuiz.quiz.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.sql.DataSource;
 import newcodes.CSQuiz.quiz.domain.QuizUserRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class QuizUserRequestRepository {
@@ -21,7 +19,8 @@ public class QuizUserRequestRepository {
 
     public int save(QuizUserRequest quizRequest) {
         String sql = "INSERT INTO quiz_requests (request_body, status, created_at, updated_at) VALUES (?, ?, ?, ?)";
-        return jdbcTemplate.update(sql, quizRequest.getRequestBody(), quizRequest.getStatus(), quizRequest.getCreatedAt(), quizRequest.getUpdatedAt());
+        return jdbcTemplate.update(sql, quizRequest.getRequestBody(), quizRequest.getStatus(),
+                quizRequest.getCreatedAt(), quizRequest.getUpdatedAt());
     }
 
     public List<QuizUserRequest> findByStatus(String status) {

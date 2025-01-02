@@ -15,12 +15,12 @@ public enum Category {
     SW_신기술(6),
     정보처리기능사(7);
 
+    @Getter
+    private final int id;
+
     Category(int id) {
         this.id = id;
     }
-
-    @Getter
-    private final int id;
 
     public static List<String> getCategories() {
         return Arrays.stream(Category.values())

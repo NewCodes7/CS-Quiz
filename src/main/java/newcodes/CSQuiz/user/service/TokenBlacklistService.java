@@ -1,12 +1,9 @@
 package newcodes.CSQuiz.user.service;
 
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.user.config.jwt.RefreshTokenValidator;
 import newcodes.CSQuiz.user.domain.BlacklistedToken;
 import newcodes.CSQuiz.user.repository.BlacklistedTokenRepository;
-import newcodes.CSQuiz.user.repository.RefreshTokenRepository;
-import newcodes.CSQuiz.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,18 +1,17 @@
 package newcodes.CSQuiz.answer.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
-import newcodes.CSQuiz.quiz.domain.Answer;
+import newcodes.CSQuiz.answer.domain.Submission;
 import newcodes.CSQuiz.answer.dto.AnswerRequest;
 import newcodes.CSQuiz.answer.dto.AnswerResponse;
-import newcodes.CSQuiz.answer.domain.Submission;
 import newcodes.CSQuiz.answer.dto.SubmissionDTO;
-import newcodes.CSQuiz.quiz.repository.QuizRepository;
 import newcodes.CSQuiz.answer.repository.SubmissionRepository;
+import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
+import newcodes.CSQuiz.quiz.domain.Answer;
+import newcodes.CSQuiz.quiz.repository.QuizRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +48,8 @@ public class AnswerService {
                 }
 
                 for (AlternativeAnswer alternativeAnswer : answers.get(answer)) {
-                    String normalizedAlternativeAnswer = alternativeAnswer.getAlternativeText().replaceAll("\\s+", "").toLowerCase();
+                    String normalizedAlternativeAnswer = alternativeAnswer.getAlternativeText().replaceAll("\\s+", "")
+                            .toLowerCase();
 
                     if (normalizedUserAnswer.equals(normalizedAlternativeAnswer)) {
                         isCurrentCorrect = true;
