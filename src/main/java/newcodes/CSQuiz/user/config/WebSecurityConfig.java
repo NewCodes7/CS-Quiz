@@ -2,8 +2,6 @@ package newcodes.CSQuiz.user.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import newcodes.CSQuiz.user.config.jwt.JwtAuthenticationFilter;
-import newcodes.CSQuiz.user.config.jwt.TokenProvider;
 import newcodes.CSQuiz.user.repository.JdbcTemplateUserRepository;
 import newcodes.CSQuiz.user.service.UserDetailService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -26,9 +24,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Slf4j
 public class WebSecurityConfig {
 
-    private final TokenProvider tokenProvider;
     private final UserDetailService userService;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JdbcTemplateUserRepository jdbcTemplateUserRepository;
 
     @Bean
@@ -51,8 +47,6 @@ public class WebSecurityConfig {
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
-//            .addFilterBefore(new JwtLoginFilter(authenticationManager(userService, bCryptPasswordEncoder()), tokenProvider, jdbcTemplateUserRepository), UsernamePasswordAuthenticationFilter.class)
-//            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(formLogin ->
                         formLogin
                                 .loginPage("/login")

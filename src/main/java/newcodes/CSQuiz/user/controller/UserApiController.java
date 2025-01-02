@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.user.dto.AddUserRequest;
 import newcodes.CSQuiz.user.dto.CustomUserDetails;
-import newcodes.CSQuiz.user.service.TokenBlacklistService;
 import newcodes.CSQuiz.user.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public class UserApiController {
 
     private final UserService userService;
-    private final TokenBlacklistService tokenBlacklistService;
 
     @PostMapping("/user")
     public String signup(AddUserRequest request) { // form을 전달하는 것이어서 requestbody필요x
@@ -34,7 +32,6 @@ public class UserApiController {
                          @RequestHeader("Refresh") String refreshToken) {
         new SecurityContextLogoutHandler()
                 .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        tokenBlacklistService.logout(customUserDetails.getUserId(), refreshToken);
         return "redirect:/login";
     }
 }
