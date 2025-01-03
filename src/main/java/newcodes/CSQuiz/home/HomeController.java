@@ -1,4 +1,4 @@
-package newcodes.CSQuiz.quiz.controller;
+package newcodes.CSQuiz.home;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
