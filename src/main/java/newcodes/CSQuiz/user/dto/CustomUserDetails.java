@@ -20,10 +20,6 @@ public class CustomUserDetails implements UserDetails {
         return user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toSet());
-
-        // 사용자의 권한을 반환하는 로직을 여기에 작성하세요.
-        // 예를 들어, 사용자가 가진 역할을 GrantedAuthority의 리스트로 반환할 수 있습니다.
-        // 권한이 없는 경우에는 빈 리스트를 반환하거나 null을 반환할 수 있습니다.
     }
 
     @Override
@@ -39,9 +35,6 @@ public class CustomUserDetails implements UserDetails {
     public Integer getUserId() {
         return user.getUser_id();
     }
-
-    // 아래의 메서드들은 사용하지 않는다면 기본 구현인 빈 메서드로 남겨둘 수 있습니다.
-    // 하지만 필요에 따라 추가적인 로직을 구현할 수도 있습니다.
 
     @Override
     public boolean isAccountNonExpired() {
