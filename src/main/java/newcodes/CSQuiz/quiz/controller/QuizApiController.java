@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.quiz.domain.Quiz;
-import newcodes.CSQuiz.quiz.dto.QuizCreateRequest;
+import newcodes.CSQuiz.quiz.domain.QuizUserRequest;
 import newcodes.CSQuiz.quiz.dto.QuizUpdateRequest;
-import newcodes.CSQuiz.quiz.service.QuizService;
+import newcodes.CSQuiz.quiz.service.QuizApiService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,20 +21,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class QuizApiController {
 
-    private final QuizService quizService;
+    private final QuizApiService quizApiService;
 
     @PostMapping("/api/quizzes")
-    public ResponseEntity<Quiz> addQuiz(@RequestBody QuizCreateRequest request) {
-        Quiz savedQuiz = quizService.saveQuizWithAnswers(request);
-
-        // FIXME: Quiz뿐만 아니라 Answer도 반환하기
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(savedQuiz);
+    public ResponseEntity<QuizUserRequest> createQuizRequest(@RequestBody String requestBody) {
+        QuizUserRequest quizRequest = quizApiService.createQuizRequest(requestBody);
+        return new ResponseEntity<>(quizRequest, HttpStatus.CREATED);
     }
 
+    // TODO: 페이징 처리
     @GetMapping("/api/quizzes")
     public ResponseEntity<List<Quiz>> findAllQuizzes() {
-        List<Quiz> quizzes = quizService.findAll();
+        List<Quiz> quizzes = quizApiService.findAll();
 
         return ResponseEntity.ok()
                 .body(quizzes);
@@ -42,7 +40,7 @@ public class QuizApiController {
 
     @GetMapping("/api/quizzes/{id}")
     public ResponseEntity<Quiz> findQuiz(@PathVariable int id) {
-        Optional<Quiz> quiz = quizService.findById(id);
+        Optional<Quiz> quiz = quizApiService.findById(id);
 
         if (quiz.isPresent()) {
             return ResponseEntity.ok()
@@ -56,7 +54,7 @@ public class QuizApiController {
 
     @DeleteMapping("/api/quizzes/{id}")
     public ResponseEntity<Void> deleteQuiz(@PathVariable int id) {
-        quizService.delete(id);
+        quizApiService.delete(id);
 
         // FIXME: 제대로 삭제되었는지 확인 응답 필요
         return ResponseEntity.ok()
@@ -67,7 +65,7 @@ public class QuizApiController {
     @PutMapping("/api/quizzes/{id}")
     public ResponseEntity<Quiz> updateQuiz(@PathVariable int id,
                                            @RequestBody QuizUpdateRequest request) {
-        Quiz updatedQuiz = quizService.update(id, request);
+        Quiz updatedQuiz = quizApiService.update(id, request);
 
         return ResponseEntity.ok()
                 .body(updatedQuiz);

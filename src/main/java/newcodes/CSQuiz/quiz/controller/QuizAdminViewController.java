@@ -1,22 +1,22 @@
-package newcodes.CSQuiz.admin;
+package newcodes.CSQuiz.quiz.controller;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.quiz.domain.QuizUserRequest;
-import newcodes.CSQuiz.quiz.service.QuizUserRequestService;
+import newcodes.CSQuiz.quiz.service.QuizAdminApiService;
 import newcodes.CSQuiz.user.dto.CustomUserDetails;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class AdminController {
+@RequiredArgsConstructor
+public class QuizAdminViewController {
 
-    @Autowired
-    private QuizUserRequestService quizRequestService;
+    private final QuizAdminApiService quizRequestService;
 
-    @GetMapping("/admin/quiz-requests")
+    @GetMapping("/admin/quizzes/requests")
     public String getQuizRequests(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         List<QuizUserRequest> quizRequests = quizRequestService.getPendingQuizRequests();
         model.addAttribute("quizRequests", quizRequests);
