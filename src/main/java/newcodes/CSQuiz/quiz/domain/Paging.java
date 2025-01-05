@@ -1,4 +1,4 @@
-package newcodes.CSQuiz.quiz.dto;
+package newcodes.CSQuiz.quiz.domain;
 
 import lombok.Getter;
 import lombok.Setter;

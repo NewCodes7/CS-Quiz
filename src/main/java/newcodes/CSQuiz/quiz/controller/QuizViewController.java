@@ -6,12 +6,12 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.common.Category;
 import newcodes.CSQuiz.quiz.domain.Page;
+import newcodes.CSQuiz.quiz.domain.Paging;
 import newcodes.CSQuiz.quiz.domain.Quiz;
-import newcodes.CSQuiz.quiz.dto.Paging;
 import newcodes.CSQuiz.quiz.dto.QuizSearchRequest;
-import newcodes.CSQuiz.quiz.dto.QuizViewDTO;
+import newcodes.CSQuiz.quiz.dto.QuizViewDto;
 import newcodes.CSQuiz.quiz.service.PagingService;
-import newcodes.CSQuiz.quiz.service.QuizApiService;
+import newcodes.CSQuiz.quiz.service.QuizService;
 import newcodes.CSQuiz.quiz.service.QuizViewService;
 import newcodes.CSQuiz.user.dto.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,14 +25,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class QuizViewController {
 
     private final QuizViewService quizViewService;
-    private final QuizApiService quizApiService;
+    private final QuizService quizService;
     private final PagingService pagingService;
 
     @GetMapping("/quizzes/{id}")
     public String showQuizDetails(@PathVariable int id,
                                   @AuthenticationPrincipal CustomUserDetails user,
                                   Model model) {
-        Optional<Quiz> quizOptional = quizApiService.findById(id);
+        Optional<Quiz> quizOptional = quizService.findById(id);
 
         if (quizOptional.isEmpty()) {
             model.addAttribute("error", "quizNotFound");
@@ -40,7 +40,7 @@ public class QuizViewController {
         }
 
         Integer userId = user != null ? user.getUserId() : null;
-        QuizViewDTO quizViewDTO = quizViewService.createQuizViewDTO(quizOptional.get(), userId);
+        QuizViewDto quizViewDTO = quizViewService.createQuizView(quizOptional.get(), userId);
 
         model.addAttribute("quiz", quizViewDTO);
         model.addAttribute("loggedIn", user != null);
@@ -56,14 +56,14 @@ public class QuizViewController {
                 .map(CustomUserDetails::getUserId)
                 .orElse(0);
 
-        List<QuizViewDTO> quizzes = quizApiService.findQuizzes(
+        List<QuizViewDto> quizzes = quizService.findQuizzes(
                 userId,
                 searchRequest.getKeyword(),
                 searchRequest.getCategories(),
                 searchRequest.getStatusList()
         );
 
-        Page<QuizViewDTO> pagedQuizzes = pagingService.getPage(
+        Page<QuizViewDto> pagedQuizzes = pagingService.getPage(
                 quizzes,
                 searchRequest.getPageNumber(),
                 searchRequest.getPageSize()

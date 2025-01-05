@@ -41,7 +41,7 @@
 <script>
     function approveQuizRequest() {
         const quizRequestId = document.querySelector('input[name="quizRequestId"]').value;
-        const url = `/quizzes/requests/${quizRequestId}/approve`;
+        const url = `/quizzes/status/pending/${quizRequestId}/approve`;
 
         fetch(url, {
             method: 'PUT'
@@ -63,7 +63,7 @@
 
     function rejectQuizRequest() {
         const quizRequestId = document.querySelector('input[name="quizRequestId"]').value;
-        const url = `/quizzes/requests/${quizRequestId}/reject`;
+        const url = `/quizzes/status/pending/${quizRequestId}/reject`;
 
         fetch(url, {
             method: 'PUT'

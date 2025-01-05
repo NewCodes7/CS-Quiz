@@ -1,9 +1,9 @@
 package newcodes.CSQuiz.quiz.controller;
 
 import lombok.RequiredArgsConstructor;
+import newcodes.CSQuiz.quiz.domain.PendingQuiz;
 import newcodes.CSQuiz.quiz.domain.Quiz;
-import newcodes.CSQuiz.quiz.domain.QuizUserRequest;
-import newcodes.CSQuiz.quiz.service.QuizAdminApiService;
+import newcodes.CSQuiz.quiz.service.QuizAdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,22 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/quizzes/requests")
+@RequestMapping("/quizzes/status/pending")
 public class QuizAdminApiController {
 
-    private final QuizAdminApiService quizAdminApiService;
+    private final QuizAdminService quizAdminService;
 
     @PutMapping("/{id}/approve")
-    public ResponseEntity<QuizUserRequest> approveQuizRequest(@PathVariable Long id) {
-        QuizUserRequest quizRequest = quizAdminApiService.approveQuizRequest(id);
-        Quiz savedQuiz = quizAdminApiService.approveAndSaveQuiz(id);
+    public ResponseEntity<PendingQuiz> approveQuizRequest(@PathVariable Long id) {
+        PendingQuiz quizRequest = quizAdminService.approveQuizRequest(id);
+        Quiz savedQuiz = quizAdminService.approveAndSaveQuiz(id);
 
         return new ResponseEntity<>(quizRequest, HttpStatus.OK);
     }
 
     @PutMapping("/{id}/reject")
-    public ResponseEntity<QuizUserRequest> rejectQuizRequest(@PathVariable Long id) {
-        QuizUserRequest quizRequest = quizAdminApiService.rejectQuizRequest(id);
+    public ResponseEntity<PendingQuiz> rejectQuizRequest(@PathVariable Long id) {
+        PendingQuiz quizRequest = quizAdminService.rejectQuizRequest(id);
         return new ResponseEntity<>(quizRequest, HttpStatus.OK);
     }
 }

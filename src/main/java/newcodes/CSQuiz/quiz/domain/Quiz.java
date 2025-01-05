@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Builder
 public class Quiz {
-
     private Integer quizId;
     private Integer categoryId;
     private String questionText;

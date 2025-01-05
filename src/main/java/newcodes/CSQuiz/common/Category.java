@@ -1,4 +1,4 @@
-package newcodes.CSQuiz.global;
+package newcodes.CSQuiz.common;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +13,7 @@ public enum Category {
     자료구조(4),
     알고리즘(5),
     SW_신기술(6),
-    정보처리기능사(7);
+    정보처리기사(7);
 
     @Getter
     private final int id;

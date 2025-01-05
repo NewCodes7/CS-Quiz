@@ -1,4 +1,3 @@
-// 생성 기능
 const createButton = document.getElementById('create-btn');
 
 // 사용자가 입력한 대체 답변을 가져오는 함수
@@ -49,21 +48,21 @@ function postDataToAPI() {
     };
 
     // API로 데이터를 전송하는 함수입니다.
-    fetch('/quiz-requests', {
+    fetch('/api/quizzes', {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data)
     })
-    .then(() => {
-        alert('퀴즈 등록을 요청했습니다. 검토 후 업로드될 예정입니다.');
-        location.replace('/quizzes');
-    })
-    .catch(error => {
-        console.error('등록 중 오류 발생:', error);
-        // 오류가 발생했을 때 사용자에게 메시지를 표시하거나 다른 조치를 취할 수 있습니다.
-    });
+        .then(() => {
+            alert('퀴즈 등록을 요청했습니다. 검토 후 업로드될 예정입니다.');
+            location.replace('/quizzes');
+        })
+        .catch(error => {
+            console.error('등록 중 오류 발생:', error);
+            // 오류가 발생했을 때 사용자에게 메시지를 표시하거나 다른 조치를 취할 수 있습니다.
+        });
 }
 
 // // createButton이 존재하고 클릭되었을 때 실행되는 이벤트 핸들러를 설정하는 함수입니다.

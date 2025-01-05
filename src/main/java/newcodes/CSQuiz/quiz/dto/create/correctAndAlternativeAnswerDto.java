@@ -1,7 +1,8 @@
-package newcodes.CSQuiz.answer.dto;
+package newcodes.CSQuiz.quiz.dto.create;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
@@ -9,13 +10,14 @@ import newcodes.CSQuiz.quiz.domain.Answer;
 
 @Getter
 @Setter
-public class AnswerDTO {
-    private String answerText;
+@Builder
+public class correctAndAlternativeAnswerDto {
+    private String correctAnswer;
     private List<String> alternativeAnswers;
 
     public Answer toAnswerEntity() {
         return Answer.builder()
-                .answerText(answerText)
+                .answerText(correctAnswer)
                 .build();
     }
 

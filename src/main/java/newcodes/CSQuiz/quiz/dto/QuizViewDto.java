@@ -8,7 +8,7 @@ import newcodes.CSQuiz.quiz.domain.Quiz;
 @Setter
 @Getter
 @NoArgsConstructor
-public class QuizViewDTO {
+public class QuizViewDto {
 
     private Integer quizId;
     private Integer categoryId;
@@ -24,7 +24,7 @@ public class QuizViewDTO {
 
     private Boolean isCorrect;
 
-    public QuizViewDTO(Quiz quiz) {
+    public QuizViewDto(Quiz quiz) {
         this.quizId = quiz.getQuizId();
         this.categoryId = quiz.getCategoryId();
         this.questionText = quiz.getQuestionText();

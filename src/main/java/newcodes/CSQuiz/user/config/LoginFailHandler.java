@@ -28,7 +28,6 @@ public class LoginFailHandler extends SimpleUrlAuthenticationFailureHandler {
         } else {
             errorMessage = "알 수 없는 이유로 로그인이 안 되고 있습니다.";
         }
-        System.out.println(errorMessage);
 
         errorMessage = URLEncoder.encode(errorMessage, "UTF-8");//한글 인코딩 깨지는 문제 방지
         setDefaultFailureUrl("/login?error=true&exception=" + errorMessage);

@@ -6,7 +6,7 @@ import newcodes.CSQuiz.answer.dto.AnswerResponse;
 import newcodes.CSQuiz.answer.dto.SubmissionDTO;
 import newcodes.CSQuiz.answer.service.AnswerService;
 import newcodes.CSQuiz.answer.service.SubmissionService;
-import newcodes.CSQuiz.quiz.dto.QuizViewDTO;
+import newcodes.CSQuiz.quiz.dto.QuizViewDto;
 import newcodes.CSQuiz.user.dto.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -59,7 +59,7 @@ public class AnswerApiController {
             AnswerRequest answerRequest,
             CustomUserDetails customUserDetails,
             Model model) {
-        QuizViewDTO quizViewDTO = new QuizViewDTO();
+        QuizViewDto quizViewDTO = new QuizViewDto();
         Boolean isSolved = submissionService.findById(customUserDetails.getUserId(), answerRequest.getQuizId());
         quizViewDTO.setIsCorrect(isSolved);
         model.addAttribute("quiz", quizViewDTO);

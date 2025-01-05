@@ -1,4 +1,4 @@
-package newcodes.CSQuiz.global;
+package newcodes.CSQuiz.common;
 
 public enum Difficulty {
     BRONZE("브론즈"),
