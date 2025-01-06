@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
@@ -33,7 +34,7 @@ public class QuizViewController {
                                   @AuthenticationPrincipal CustomUserDetails user,
                                   Model model) {
         Quiz quiz = quizService.findQuizById(id);
-        Integer userId = user != null ? user.getUserId() : null;
+        Integer userId = (user == null ? null : user.getUserId());
         QuizViewDto quizViewDTO = quizViewService.createQuizView(quiz, userId);
 
         model.addAttribute("quiz", quizViewDTO);
@@ -44,7 +45,7 @@ public class QuizViewController {
 
     @GetMapping("/quizzes")
     public String showQuizzesWithSearch(@AuthenticationPrincipal CustomUserDetails user,
-                                        @Valid QuizSearchRequest searchRequest,
+                                        @Valid @ModelAttribute QuizSearchRequest searchRequest,
                                         Model model) {
         int userId = Optional.ofNullable(user)
                 .map(CustomUserDetails::getUserId)
