@@ -1,8 +1,8 @@
-package newcodes.CSQuiz.answer.repository;
+package newcodes.CSQuiz.submission.repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import newcodes.CSQuiz.answer.domain.Submission;
+import newcodes.CSQuiz.submission.domain.Submission;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;

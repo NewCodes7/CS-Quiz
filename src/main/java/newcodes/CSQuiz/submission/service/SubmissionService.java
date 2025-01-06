@@ -1,29 +1,29 @@
-package newcodes.CSQuiz.answer.service;
+package newcodes.CSQuiz.submission.service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import newcodes.CSQuiz.answer.domain.Submission;
-import newcodes.CSQuiz.answer.dto.AnswerRequest;
-import newcodes.CSQuiz.answer.dto.AnswerResponse;
-import newcodes.CSQuiz.answer.dto.SubmissionDTO;
-import newcodes.CSQuiz.answer.repository.SubmissionRepository;
 import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
 import newcodes.CSQuiz.quiz.domain.Answer;
 import newcodes.CSQuiz.quiz.repository.QuizRepository;
+import newcodes.CSQuiz.submission.domain.Submission;
+import newcodes.CSQuiz.submission.dto.SubmissionDto;
+import newcodes.CSQuiz.submission.dto.SubmissionRequest;
+import newcodes.CSQuiz.submission.dto.SubmissionResponse;
+import newcodes.CSQuiz.submission.repository.SubmissionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AnswerService {
+public class SubmissionService {
 
     private final QuizRepository quizRepository; // REFACTOR: quiz 패키지 의존 문제
     private final SubmissionRepository submissionRepository;
 
     @Transactional
-    public AnswerResponse check(AnswerRequest request) {
+    public SubmissionResponse check(SubmissionRequest request) {
         if (request.getUserAnswers() == null || request.getUserAnswers().length == 0) {
             throw new IllegalArgumentException("사용자가 답을 입력하지 않았습니다.");
         }
@@ -64,7 +64,7 @@ public class AnswerService {
             }
         }
 
-        return AnswerResponse.builder()
+        return SubmissionResponse.builder()
                 .userId(request.getUserId())
                 .quizId(request.getQuizId())
                 .isCorrect(Arrays.asList(isCorrects))
@@ -72,7 +72,11 @@ public class AnswerService {
                 .build();
     }
 
-    public Submission save(SubmissionDTO submissionDTO) {
+    public Submission save(SubmissionDto submissionDTO) {
         return submissionRepository.save(submissionDTO.toEntity());
+    }
+
+    public Boolean findById(int userId, int quizId) {
+        return submissionRepository.findById(userId, quizId);
     }
 }

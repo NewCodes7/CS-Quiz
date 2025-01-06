@@ -1,9 +1,9 @@
 package newcodes.CSQuiz.quiz.service;
 
 import lombok.RequiredArgsConstructor;
-import newcodes.CSQuiz.answer.service.SubmissionService;
 import newcodes.CSQuiz.quiz.domain.Quiz;
 import newcodes.CSQuiz.quiz.dto.QuizViewDto;
+import newcodes.CSQuiz.submission.service.SubmissionService;
 import org.springframework.stereotype.Service;
 
 @Service

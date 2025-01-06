@@ -1,4 +1,4 @@
-package newcodes.CSQuiz.answer.domain;
+package newcodes.CSQuiz.submission.domain;
 
 import lombok.Builder;
 import lombok.Getter;

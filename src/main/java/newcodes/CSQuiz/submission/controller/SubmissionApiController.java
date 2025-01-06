@@ -1,12 +1,11 @@
-package newcodes.CSQuiz.answer.controller;
+package newcodes.CSQuiz.submission.controller;
 
 import lombok.RequiredArgsConstructor;
-import newcodes.CSQuiz.answer.dto.AnswerRequest;
-import newcodes.CSQuiz.answer.dto.AnswerResponse;
-import newcodes.CSQuiz.answer.dto.SubmissionDTO;
-import newcodes.CSQuiz.answer.service.AnswerService;
-import newcodes.CSQuiz.answer.service.SubmissionService;
 import newcodes.CSQuiz.quiz.dto.QuizViewDto;
+import newcodes.CSQuiz.submission.dto.SubmissionDto;
+import newcodes.CSQuiz.submission.dto.SubmissionRequest;
+import newcodes.CSQuiz.submission.dto.SubmissionResponse;
+import newcodes.CSQuiz.submission.service.SubmissionService;
 import newcodes.CSQuiz.user.dto.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -16,51 +15,50 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @RequiredArgsConstructor
-public class AnswerApiController {
+public class SubmissionApiController {
 
-    private final AnswerService answerService;
     private final SubmissionService submissionService;
 
     @PostMapping("/quizzes/{id}")
     public String checkAnswer(
-            @ModelAttribute("answerRequest") AnswerRequest answerRequest,
+            @ModelAttribute("answerRequest") SubmissionRequest submissionRequest,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             Model model) {
-        AnswerResponse answerResponse = answerService.check(answerRequest);
-        updateAnswerResponse(answerRequest, answerResponse, customUserDetails, model);
-        saveSubmission(answerRequest, answerResponse, customUserDetails);
-        updateQuizView(answerRequest, customUserDetails, model);
+        SubmissionResponse answerResponse = submissionService.check(submissionRequest);
+        updateAnswerResponse(submissionRequest, answerResponse, customUserDetails, model);
+        saveSubmission(submissionRequest, answerResponse, customUserDetails);
+        updateQuizView(submissionRequest, customUserDetails, model);
 
         return "/quiz :: #answerResult";
     }
 
     private void updateAnswerResponse(
-            AnswerRequest answerRequest,
-            AnswerResponse answerResponse,
+            SubmissionRequest submissionRequest,
+            SubmissionResponse answerResponse,
             CustomUserDetails customUserDetails,
             Model model) {
-        answerResponse.setQuizId(answerRequest.getQuizId());
-        answerResponse.setUserId(answerRequest.getUserId());
+        answerResponse.setQuizId(submissionRequest.getQuizId());
+        answerResponse.setUserId(submissionRequest.getUserId());
         model.addAttribute("answerResponse", answerResponse);
     }
 
     private void saveSubmission(
-            AnswerRequest answerRequest,
-            AnswerResponse answerResponse,
+            SubmissionRequest submissionRequest,
+            SubmissionResponse answerResponse,
             CustomUserDetails customUserDetails) {
-        answerService.save(SubmissionDTO.builder()
+        submissionService.save(SubmissionDto.builder()
                 .userId(customUserDetails.getUserId())
-                .quizId(answerRequest.getQuizId())
+                .quizId(submissionRequest.getQuizId())
                 .correct(answerResponse.getIsAllCorrect())
                 .build());
     }
 
     private void updateQuizView(
-            AnswerRequest answerRequest,
+            SubmissionRequest submissionRequest,
             CustomUserDetails customUserDetails,
             Model model) {
         QuizViewDto quizViewDTO = new QuizViewDto();
-        Boolean isSolved = submissionService.findById(customUserDetails.getUserId(), answerRequest.getQuizId());
+        Boolean isSolved = submissionService.findById(customUserDetails.getUserId(), submissionRequest.getQuizId());
         quizViewDTO.setIsCorrect(isSolved);
         model.addAttribute("quiz", quizViewDTO);
     }

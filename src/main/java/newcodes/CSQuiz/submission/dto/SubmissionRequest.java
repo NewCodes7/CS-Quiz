@@ -1,4 +1,4 @@
-package newcodes.CSQuiz.answer.dto;
+package newcodes.CSQuiz.submission.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 // 유저가 보내는 정답 submit
 @Getter
 @Setter
-public class AnswerRequest {
+public class SubmissionRequest {
     private int quizId;
     private int userId;
     private String[] userAnswers;
