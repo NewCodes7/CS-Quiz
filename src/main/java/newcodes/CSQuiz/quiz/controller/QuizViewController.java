@@ -32,15 +32,9 @@ public class QuizViewController {
     public String showQuizDetails(@PathVariable int id,
                                   @AuthenticationPrincipal CustomUserDetails user,
                                   Model model) {
-        Optional<Quiz> quizOptional = quizService.findById(id);
-
-        if (quizOptional.isEmpty()) {
-            model.addAttribute("error", "quizNotFound");
-            return "quiz";
-        }
-
+        Quiz quiz = quizService.findQuizById(id);
         Integer userId = user != null ? user.getUserId() : null;
-        QuizViewDto quizViewDTO = quizViewService.createQuizView(quizOptional.get(), userId);
+        QuizViewDto quizViewDTO = quizViewService.createQuizView(quiz, userId);
 
         model.addAttribute("quiz", quizViewDTO);
         model.addAttribute("loggedIn", user != null);

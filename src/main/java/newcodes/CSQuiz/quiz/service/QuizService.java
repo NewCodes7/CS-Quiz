@@ -3,8 +3,8 @@ package newcodes.CSQuiz.quiz.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import newcodes.CSQuiz.exception.QuizNotFoundException;
 import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
 import newcodes.CSQuiz.quiz.domain.Answer;
 import newcodes.CSQuiz.quiz.domain.PendingQuiz;
@@ -25,8 +25,9 @@ public class QuizService {
         return quizRepository.findQuizzes(userId, kw, categories, statuses);
     }
 
-    public Optional<Quiz> findById(int id) {
-        return quizRepository.findQuizById(id);
+    public Quiz findQuizById(int id) {
+        return quizRepository.findQuizById(id)
+                .orElseThrow(() -> new QuizNotFoundException(id));
     }
 
     public Map<Answer, List<AlternativeAnswer>> findAnswersById(int id) {
