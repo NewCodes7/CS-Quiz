@@ -31,19 +31,24 @@ class QuizServiceTest {
     @Test
     @DisplayName("퀴즈 ID를 통해 단일 퀴즈를 조회할 수 있다")
     void findQuizByIdReturnsQuizWhenQuizIsFound() {
+        // given
         Quiz quiz = Quiz.builder().quizId(1).questionText("question").build();
         when(quizRepository.findQuizById(1)).thenReturn(Optional.of(quiz));
 
+        // when
         Quiz result = quizService.findQuizById(1);
 
+        // then
         assertEquals(quiz, result);
     }
 
     @Test
     @DisplayName("퀴즈 ID로 조회시 퀴즈가 존재하지 않으면 QuizNotFoundException이 발생한다")
     void findQuizByIdThrowsQuizNotFoundExceptionWhenQuizIsNotFound() {
+        // given & when
         when(quizRepository.findQuizById(1)).thenReturn(Optional.empty());
 
+        // then
         assertThrows(QuizNotFoundException.class, () -> quizService.findQuizById(1));
     }
 }
