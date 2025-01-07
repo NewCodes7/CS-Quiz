@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.sql.DataSource;
-import newcodes.CSQuiz.common.JsonFormatter;
+import newcodes.CSQuiz.common.util.JsonFormatter;
 import newcodes.CSQuiz.quiz.domain.PendingQuiz;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
