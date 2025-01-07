@@ -13,6 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserAnswer {
-    @NotBlank(message = "답변을 입력해주세요")
+    @NotBlank(message = "공백을 입력할 수 없어요!")
     private String userAnswer;
 }

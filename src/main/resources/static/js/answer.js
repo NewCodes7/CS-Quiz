@@ -1,13 +1,12 @@
-function submitForm() {
-    const formData = new FormData();
-    formData.append("quizId", $("#quizId").val());
+function submitForm(event) {
+    event.preventDefault();
 
-    $("[name^='userAnswers']").each(function (index) {
-        formData.append(`userAnswers[${index}].userAnswer`, $(this).val());
-    });
+    const form = event.target;
+    const formData = new FormData(form);
+    formData.append("quizId", $("#quiz-id").val());
 
     $.ajax({
-        url: "/quizzes/" + $("#quizId").val(),
+        url: "/quizzes/" + $("#quiz-id").val(),
         type: "POST",
         data: formData,
         processData: false,
@@ -17,7 +16,8 @@ function submitForm() {
             $('#answerResult').html(fragment);
         })
         .fail(function (jqXHR, textStatus, errorThrown) {
+            // REFACTOR: 깔끔하게 예외 메시지만 받거나, 필터링하기
             const errorMessage = jqXHR.responseText || "퀴즈 제출 중 오류가 발생했습니다.";
-            alert(errorMessage);
+            $('#answerResult').html(`<div class="alert">${errorMessage}</div>`);
         });
 }

@@ -1,6 +1,9 @@
 package newcodes.CSQuiz.submission.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import newcodes.CSQuiz.exception.validation.SubmissionValidationException;
+import newcodes.CSQuiz.exception.validation.ValidationException;
 import newcodes.CSQuiz.quiz.dto.QuizViewDto;
 import newcodes.CSQuiz.submission.dto.SubmissionDto;
 import newcodes.CSQuiz.submission.dto.SubmissionRequest;
@@ -10,6 +13,8 @@ import newcodes.CSQuiz.user.dto.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -20,52 +25,45 @@ public class SubmissionApiController {
     private final SubmissionService submissionService;
 
     @PostMapping("/quizzes/{id}")
-    public String checkAnswer(
-            @ModelAttribute("answerRequest") SubmissionRequest submissionRequest,
+    public String gradeUserSubmission(
             @Valid @ModelAttribute("answerRequest") SubmissionRequest submissionRequest,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            BindingResult bindingResult,
             Model model) {
-        SubmissionResponse answerResponse = submissionService.check(submissionRequest);
-        updateAnswerResponse(submissionRequest, answerResponse, customUserDetails, model);
-        saveSubmission(submissionRequest, answerResponse, customUserDetails);
-        updateQuizView(submissionRequest, customUserDetails, model);
+        if (bindingResult.hasErrors()) {
+            throw new SubmissionValidationException(bindingResult);
+        }
 
-        return "/quiz :: #answerResult";
-    }
+        int userId = customUserDetails.getUserId();
+        int quizId = submissionRequest.getQuizId();
 
-    private void updateAnswerResponse(
-            SubmissionRequest submissionRequest,
-            SubmissionResponse answerResponse,
-            CustomUserDetails customUserDetails,
-            Model model) {
-        answerResponse.setQuizId(submissionRequest.getQuizId());
-        answerResponse.setUserId(submissionRequest.getUserId());
-        model.addAttribute("answerResponse", answerResponse);
-    }
-
-    private void saveSubmission(
-            SubmissionRequest submissionRequest,
-            SubmissionResponse answerResponse,
-            CustomUserDetails customUserDetails) {
         // 맞는지 채점
         SubmissionResponse answerResponse = submissionService.gradeSubmission(submissionRequest);
         answerResponse.setQuizId(quizId);
         answerResponse.setUserId(userId);
 
+        // 채점 결과 저장
         submissionService.save(SubmissionDto.builder()
-                .userId(customUserDetails.getUserId())
-                .quizId(submissionRequest.getQuizId())
+                .userId(userId)
+                .quizId(quizId)
                 .correct(answerResponse.getIsAllCorrect())
                 .build());
+
+        // 채점 결과 뷰에 전달 (지금 틀렸어도 과거에 맞았다면 맞았다고 표시)
+        // REFACTOR: 캐시 사용해서 DB 조회 횟수 줄이기
+        Boolean isSolved = submissionService.findById(userId, quizId);
+        QuizViewDto quizViewDto = new QuizViewDto();
+        quizViewDto.setIsCorrect(isSolved);
+
+        model.addAttribute("quiz", quizViewDto);
+        model.addAttribute("answerResponse", answerResponse);
+
+        return "/quiz :: #answerResult";
     }
 
-    private void updateQuizView(
-            SubmissionRequest submissionRequest,
-            CustomUserDetails customUserDetails,
-            Model model) {
-        QuizViewDto quizViewDTO = new QuizViewDto();
-        Boolean isSolved = submissionService.findById(customUserDetails.getUserId(), submissionRequest.getQuizId());
-        quizViewDTO.setIsCorrect(isSolved);
-        model.addAttribute("quiz", quizViewDTO);
+    @ExceptionHandler(ValidationException.class)
+    public String handleValidation(ValidationException e, Model model) {
+        model.addAttribute("errors", e.getMessage());
+        return "/quiz :: #answerResult";
     }
 }
