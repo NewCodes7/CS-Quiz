@@ -22,6 +22,7 @@ public class SubmissionApiController {
     @PostMapping("/quizzes/{id}")
     public String checkAnswer(
             @ModelAttribute("answerRequest") SubmissionRequest submissionRequest,
+            @Valid @ModelAttribute("answerRequest") SubmissionRequest submissionRequest,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             Model model) {
         SubmissionResponse answerResponse = submissionService.check(submissionRequest);
