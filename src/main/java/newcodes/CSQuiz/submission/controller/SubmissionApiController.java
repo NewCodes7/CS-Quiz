@@ -47,6 +47,11 @@ public class SubmissionApiController {
             SubmissionRequest submissionRequest,
             SubmissionResponse answerResponse,
             CustomUserDetails customUserDetails) {
+        // 맞는지 채점
+        SubmissionResponse answerResponse = submissionService.gradeSubmission(submissionRequest);
+        answerResponse.setQuizId(quizId);
+        answerResponse.setUserId(userId);
+
         submissionService.save(SubmissionDto.builder()
                 .userId(customUserDetails.getUserId())
                 .quizId(submissionRequest.getQuizId())

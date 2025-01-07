@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import newcodes.CSQuiz.common.util.StringUtils;
 import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
 import newcodes.CSQuiz.quiz.domain.Answer;
 import newcodes.CSQuiz.quiz.repository.QuizRepository;
@@ -11,6 +12,7 @@ import newcodes.CSQuiz.submission.domain.Submission;
 import newcodes.CSQuiz.submission.dto.SubmissionDto;
 import newcodes.CSQuiz.submission.dto.SubmissionRequest;
 import newcodes.CSQuiz.submission.dto.SubmissionResponse;
+import newcodes.CSQuiz.submission.dto.UserAnswer;
 import newcodes.CSQuiz.submission.repository.SubmissionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,46 +25,31 @@ public class SubmissionService {
     private final SubmissionRepository submissionRepository;
 
     @Transactional
-    public SubmissionResponse check(SubmissionRequest request) {
-        if (request.getUserAnswers() == null || request.getUserAnswers().length == 0) {
-            throw new IllegalArgumentException("사용자가 답을 입력하지 않았습니다.");
-        }
-
+    public SubmissionResponse gradeSubmission(SubmissionRequest request) {
         Map<Answer, List<AlternativeAnswer>> answers = quizRepository.findAnswersById(request.getQuizId());
 
-        String[] userAnswers = request.getUserAnswers();
-        Boolean[] isCorrects = new Boolean[userAnswers.length];
-        boolean isAllCorrect = true;
+        List<UserAnswer> userAnswers = request.getUserAnswers();
 
-        for (int i = 0; i < userAnswers.length; i++) {
-            String userAnswer = userAnswers[i];
-            boolean isCurrentCorrect = false;
+        Boolean[] isCorrects = userAnswers.stream()
+                .map(userAnswer -> {
+                    String normalizedUserAnswer = StringUtils.normalize(userAnswer.getUserAnswer());
 
-            for (Answer answer : answers.keySet()) {
-                String normalizedAnswer = answer.getAnswerText().replaceAll("\\s+", "").toLowerCase();
-                String normalizedUserAnswer = userAnswer.replaceAll("\\s+", "").toLowerCase();
+                    return answers.entrySet().stream()
+                            .anyMatch(entry -> {
+                                Answer answer = entry.getKey();
+                                String normalizedAnswer = StringUtils.normalize(answer.getAnswerText());
 
-                if (normalizedUserAnswer.equals(normalizedAnswer)) {
-                    isCurrentCorrect = true;
-                    break;
-                }
+                                if (normalizedUserAnswer.equals(normalizedAnswer)) {
+                                    return true;
+                                }
 
-                for (AlternativeAnswer alternativeAnswer : answers.get(answer)) {
-                    String normalizedAlternativeAnswer = alternativeAnswer.getAlternativeText().replaceAll("\\s+", "")
-                            .toLowerCase();
-
-                    if (normalizedUserAnswer.equals(normalizedAlternativeAnswer)) {
-                        isCurrentCorrect = true;
-                        break;
-                    }
-                }
-            }
-
-            isCorrects[i] = isCurrentCorrect;
-            if (!isCurrentCorrect) {
-                isAllCorrect = false;
-            }
-        }
+                                return entry.getValue().stream()
+                                        .map(alt -> StringUtils.normalize(alt.getAlternativeText()))
+                                        .anyMatch(normalizedUserAnswer::equals);
+                            });
+                })
+                .toArray(Boolean[]::new);
+        boolean isAllCorrect = Arrays.stream(isCorrects).allMatch(Boolean::booleanValue);
 
         return SubmissionResponse.builder()
                 .userId(request.getUserId())
