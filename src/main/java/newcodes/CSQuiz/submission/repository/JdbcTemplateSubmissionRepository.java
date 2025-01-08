@@ -3,6 +3,7 @@ package newcodes.CSQuiz.submission.repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import newcodes.CSQuiz.submission.domain.Submission;
+import newcodes.CSQuiz.submission.dto.SubmissionResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -18,26 +19,23 @@ public class JdbcTemplateSubmissionRepository implements SubmissionRepository {
     }
 
     @Override
-    public Submission save(Submission submission) {
+    public SubmissionResponse save(SubmissionResponse submissionResponse) {
         String sql = "INSERT INTO submissions(user_id, quiz_id, correct, submission_date) VALUES(?, ?, ?, NOW())";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            pstmt.setInt(1, submission.getUserId());
-            pstmt.setInt(2, submission.getQuizId());
-            pstmt.setBoolean(3, submission.getCorrect());
+            pstmt.setInt(1, submissionResponse.getUserId());
+            pstmt.setInt(2, submissionResponse.getQuizId());
+            pstmt.setBoolean(3, submissionResponse.getIsAllCorrect());
             return pstmt;
         }, keyHolder);
 
         if (keyHolder.getKey() != null) {
-            submission.setSubmissionId(keyHolder.getKey().intValue());
+            submissionResponse.setSubmissionId(keyHolder.getKey().intValue());
         }
-//        else {
-//            throw new SQLException("ID 조회 실패");
-//        }
 
-        return submission;
+        return submissionResponse;
     }
 
     @Override

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import newcodes.CSQuiz.exception.validation.SubmissionValidationException;
 import newcodes.CSQuiz.exception.validation.ValidationException;
 import newcodes.CSQuiz.quiz.dto.QuizViewDto;
-import newcodes.CSQuiz.submission.dto.SubmissionDto;
 import newcodes.CSQuiz.submission.dto.SubmissionRequest;
 import newcodes.CSQuiz.submission.dto.SubmissionResponse;
 import newcodes.CSQuiz.submission.service.SubmissionService;
@@ -37,26 +36,18 @@ public class SubmissionApiController {
         int userId = customUserDetails.getUserId();
         int quizId = submissionRequest.getQuizId();
 
-        // 맞는지 채점
-        SubmissionResponse answerResponse = submissionService.gradeSubmission(submissionRequest);
-        answerResponse.setQuizId(quizId);
-        answerResponse.setUserId(userId);
+        // 채점 & 결과 저장
+        SubmissionResponse submissionResponse = submissionService.gradeSubmission(submissionRequest);
+        submissionResponse.setQuizId(quizId);
+        submissionResponse.setUserId(userId);
 
-        // 채점 결과 저장
-        submissionService.save(SubmissionDto.builder()
-                .userId(userId)
-                .quizId(quizId)
-                .correct(answerResponse.getIsAllCorrect())
-                .build());
-
-        // 채점 결과 뷰에 전달 (지금 틀렸어도 과거에 맞았다면 맞았다고 표시)
-        // REFACTOR: 캐시 사용해서 DB 조회 횟수 줄이기
+        // 과거 채점 결과 뷰에 전달 (퀴즈 상태에 지금 틀렸어도 과거에 맞았다면 맞았다고 표시)
         Boolean isSolved = submissionService.findById(userId, quizId);
         QuizViewDto quizViewDto = new QuizViewDto();
         quizViewDto.setIsCorrect(isSolved);
 
-        model.addAttribute("quiz", quizViewDto);
-        model.addAttribute("answerResponse", answerResponse);
+        model.addAttribute("quiz", quizViewDto); // 과거 채점까지 고려한 퀴즈 풀이 상태 (O/X)
+        model.addAttribute("answerResponse", submissionResponse); // 현재 채점 결과 (O/X)
 
         return "/quiz :: #answerResult";
     }

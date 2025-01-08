@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubmissionResponse {
+    private int submissionId;
     private int userId;
     private int quizId;
     private Boolean isAllCorrect;

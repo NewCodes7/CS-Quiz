@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import newcodes.CSQuiz.exception.validation.SubmissionValidationException;
 import newcodes.CSQuiz.quiz.dto.QuizViewDto;
-import newcodes.CSQuiz.submission.dto.SubmissionDto;
 import newcodes.CSQuiz.submission.dto.SubmissionRequest;
 import newcodes.CSQuiz.submission.dto.SubmissionResponse;
 import newcodes.CSQuiz.submission.dto.UserAnswer;
@@ -70,7 +69,6 @@ class SubmissionApiControllerTest {
         // then
         assertEquals("/quiz :: #answerResult", viewName);
         verify(submissionService).gradeSubmission(submissionRequest);
-        verify(submissionService).save(any(SubmissionDto.class));
         verify(submissionService).findById(1, 1);
         verify(model).addAttribute(eq("quiz"), any(QuizViewDto.class));
         verify(model).addAttribute(eq("answerResponse"), eq(submissionResponse));
