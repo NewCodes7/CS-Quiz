@@ -1,22 +1,22 @@
-package newcodes.CSQuiz.user.repository;
+package newcodes.CSQuiz.auth.repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import newcodes.CSQuiz.user.domain.Role;
-import newcodes.CSQuiz.user.domain.User;
+import newcodes.CSQuiz.auth.domain.Role;
+import newcodes.CSQuiz.auth.domain.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class JdbcTemplateUserRepository implements UserRepository {
+public class JdbcTemplateAuthRepository implements AuthRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcTemplateUserRepository(JdbcTemplate jdbcTemplate) {
+    public JdbcTemplateAuthRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -78,9 +78,6 @@ public class JdbcTemplateUserRepository implements UserRepository {
         if (keyHolder.getKey() != null) {
             user.setUser_id(keyHolder.getKey().intValue());
         }
-//        else {
-//            throw new SQLException("ID 조회 실패");
-//        }
 
         return user;
     }

@@ -1,4 +1,4 @@
-package newcodes.CSQuiz.user.dto;
+package newcodes.CSQuiz.auth.dto;
 
 import lombok.Builder;
 import lombok.Getter;

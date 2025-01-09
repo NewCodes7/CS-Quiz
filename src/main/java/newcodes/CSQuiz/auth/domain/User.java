@@ -1,4 +1,4 @@
-package newcodes.CSQuiz.user.domain;
+package newcodes.CSQuiz.auth.domain;
 
 import java.util.Set;
 import lombok.AllArgsConstructor;

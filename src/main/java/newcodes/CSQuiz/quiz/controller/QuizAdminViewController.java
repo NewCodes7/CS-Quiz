@@ -2,9 +2,9 @@ package newcodes.CSQuiz.quiz.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import newcodes.CSQuiz.auth.dto.CustomUserDetails;
 import newcodes.CSQuiz.quiz.domain.PendingQuiz;
 import newcodes.CSQuiz.quiz.service.QuizAdminService;
-import newcodes.CSQuiz.user.dto.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

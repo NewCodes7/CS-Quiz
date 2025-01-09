@@ -1,9 +1,9 @@
-package newcodes.CSQuiz.user.config;
+package newcodes.CSQuiz.auth.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import newcodes.CSQuiz.user.repository.JdbcTemplateUserRepository;
-import newcodes.CSQuiz.user.service.UserDetailService;
+import newcodes.CSQuiz.auth.repository.JdbcTemplateAuthRepository;
+import newcodes.CSQuiz.auth.service.UserDetailService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfig {
 
     private final UserDetailService userService;
-    private final JdbcTemplateUserRepository jdbcTemplateUserRepository;
+    private final JdbcTemplateAuthRepository jdbcTemplateUserRepository;
 
     @Bean
     public WebSecurityCustomizer configure() {
@@ -33,14 +33,14 @@ public class WebSecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
+    // REFACTOR: API 변경된 것 업데이트
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        log.info("securityFilterChain 실행");
-
         http
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/login", "/signup", "/quizzes", "/", "/static/**", "user").permitAll()
+                                .requestMatchers("/login", "/signup", "/quizzes", "/", "/static/**", "user")
+                                .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/quizzes/*").permitAll()
                                 .requestMatchers("/api/quizzes/*", "/quiz-requests/*/approve",
                                         "/quiz-requests/*/reject").hasRole("ADMIN")

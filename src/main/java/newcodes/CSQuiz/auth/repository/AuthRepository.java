@@ -1,9 +1,9 @@
-package newcodes.CSQuiz.user.repository;
+package newcodes.CSQuiz.auth.repository;
 
 import java.util.Optional;
-import newcodes.CSQuiz.user.domain.User;
+import newcodes.CSQuiz.auth.domain.User;
 
-public interface UserRepository {
+public interface AuthRepository {
     Optional<User> findByEmail(String email);
 
     Optional<User> findById(Integer id);
