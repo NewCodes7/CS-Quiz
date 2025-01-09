@@ -9,14 +9,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import newcodes.CSQuiz.auth.domain.User;
+import newcodes.CSQuiz.auth.dto.CustomUserDetails;
 import newcodes.CSQuiz.exception.validation.SubmissionValidationException;
 import newcodes.CSQuiz.quiz.dto.QuizViewDto;
 import newcodes.CSQuiz.submission.dto.SubmissionRequest;
 import newcodes.CSQuiz.submission.dto.SubmissionResponse;
 import newcodes.CSQuiz.submission.dto.UserAnswer;
 import newcodes.CSQuiz.submission.service.SubmissionService;
-import newcodes.CSQuiz.user.domain.User;
-import newcodes.CSQuiz.user.dto.CustomUserDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

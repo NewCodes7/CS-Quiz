@@ -37,9 +37,10 @@ public class SubmissionService {
                 .quizId(request.getQuizId())
                 .isCorrect(gradingResults)
                 .isAllCorrect(isAllCorrect)
+                .userAnswers(request.getUserAnswers())
                 .build();
         ;
-        return save(submissionResponse);
+        return saveUserSubmission(submissionResponse);
     }
 
     private List<Boolean> gradeUserAnswers(List<UserAnswer> userAnswers,
@@ -73,7 +74,7 @@ public class SubmissionService {
                 .anyMatch(normalizedUserAnswer::equals);
     }
 
-    private SubmissionResponse save(SubmissionResponse submissionResponse) {
-        return submissionRepository.save(submissionResponse);
+    private SubmissionResponse saveUserSubmission(SubmissionResponse submissionResponse) {
+        return submissionRepository.saveUserSubmission(submissionResponse);
     }
 }

@@ -2,8 +2,10 @@ package newcodes.CSQuiz.submission.repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import newcodes.CSQuiz.submission.domain.Submission;
 import newcodes.CSQuiz.submission.dto.SubmissionResponse;
+import newcodes.CSQuiz.submission.dto.UserAnswer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -19,7 +21,7 @@ public class JdbcTemplateSubmissionRepository implements SubmissionRepository {
     }
 
     @Override
-    public SubmissionResponse save(SubmissionResponse submissionResponse) {
+    public SubmissionResponse saveUserSubmission(SubmissionResponse submissionResponse) {
         String sql = "INSERT INTO submissions(user_id, quiz_id, correct, submission_date) VALUES(?, ?, ?, NOW())";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -31,8 +33,15 @@ public class JdbcTemplateSubmissionRepository implements SubmissionRepository {
             return pstmt;
         }, keyHolder);
 
-        if (keyHolder.getKey() != null) {
-            submissionResponse.setSubmissionId(keyHolder.getKey().intValue());
+        int submissionId = keyHolder.getKey().intValue();
+        submissionResponse.setSubmissionId(submissionId);
+
+        // 유저가 제출한 답안 리스트 저장 REFACTOR: I/O 횟수 줄이기
+        String answerSql = "INSERT INTO submission_answers(submission_id, answer_text) VALUES(?, ?)";
+        List<UserAnswer> userAnswers = submissionResponse.getUserAnswers();
+
+        for (UserAnswer answer : userAnswers) {
+            jdbcTemplate.update(answerSql, submissionId, answer.getUserAnswer());
         }
 
         return submissionResponse;

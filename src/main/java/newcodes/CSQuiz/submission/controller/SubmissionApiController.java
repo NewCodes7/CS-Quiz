@@ -2,13 +2,13 @@ package newcodes.CSQuiz.submission.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import newcodes.CSQuiz.auth.dto.CustomUserDetails;
 import newcodes.CSQuiz.exception.validation.SubmissionValidationException;
 import newcodes.CSQuiz.exception.validation.ValidationException;
 import newcodes.CSQuiz.quiz.dto.QuizViewDto;
 import newcodes.CSQuiz.submission.dto.SubmissionRequest;
 import newcodes.CSQuiz.submission.dto.SubmissionResponse;
 import newcodes.CSQuiz.submission.service.SubmissionService;
-import newcodes.CSQuiz.user.dto.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +35,7 @@ public class SubmissionApiController {
 
         int userId = customUserDetails.getUserId();
         int quizId = submissionRequest.getQuizId();
+        submissionRequest.setUserId(userId);
 
         // 채점 & 결과 저장
         SubmissionResponse submissionResponse = submissionService.gradeSubmission(submissionRequest);

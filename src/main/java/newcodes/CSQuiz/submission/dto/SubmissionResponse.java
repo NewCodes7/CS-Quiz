@@ -16,6 +16,7 @@ public class SubmissionResponse {
     private int submissionId;
     private int userId;
     private int quizId;
+    private List<UserAnswer> userAnswers;
     private Boolean isAllCorrect;
     private List<Boolean> isCorrect;
 }

@@ -75,7 +75,7 @@ class SubmissionServiceTest {
                 .build();
 
         when(quizRepository.findAnswersById(1)).thenReturn(singleAnswer);
-        when(submissionRepository.save(any(SubmissionResponse.class))).thenReturn(expectedResponse);
+        when(submissionRepository.saveUserSubmission(any(SubmissionResponse.class))).thenReturn(expectedResponse);
 
         // when
         SubmissionResponse response = submissionService.gradeSubmission(submissionRequest);
@@ -106,7 +106,7 @@ class SubmissionServiceTest {
                 .build();
 
         when(quizRepository.findAnswersById(1)).thenReturn(singleAnswer);
-        when(submissionRepository.save(any(SubmissionResponse.class))).thenReturn(expectedResponse);
+        when(submissionRepository.saveUserSubmission(any(SubmissionResponse.class))).thenReturn(expectedResponse);
 
         // when
         SubmissionResponse response = submissionService.gradeSubmission(submissionRequest);
@@ -141,7 +141,7 @@ class SubmissionServiceTest {
                 .build();
 
         when(quizRepository.findAnswersById(1)).thenReturn(multipleAnswers);
-        when(submissionRepository.save(any(SubmissionResponse.class))).thenReturn(expectedResponse);
+        when(submissionRepository.saveUserSubmission(any(SubmissionResponse.class))).thenReturn(expectedResponse);
 
         // when
         SubmissionResponse response = submissionService.gradeSubmission(submissionRequest);
@@ -176,7 +176,7 @@ class SubmissionServiceTest {
                 .build();
 
         when(quizRepository.findAnswersById(1)).thenReturn(multipleAnswers);
-        when(submissionRepository.save(any(SubmissionResponse.class))).thenReturn(expectedResponse);
+        when(submissionRepository.saveUserSubmission(any(SubmissionResponse.class))).thenReturn(expectedResponse);
 
         // when
         SubmissionResponse response = submissionService.gradeSubmission(submissionRequest);
