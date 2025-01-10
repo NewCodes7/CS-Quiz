@@ -7,81 +7,81 @@
 
 <h1>Requested Quizzes</h1>
 <table>
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Request Body</th>
-    <th>Status</th>
-    <th>Created At</th>
-    <th>Updated At</th>
-    <th>Actions</th> <!-- 새로 추가된 열 -->
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="quizRequest : ${quizRequests}">
-    <td th:text="${quizRequest.id}"></td>
-    <td th:text="${quizRequest.requestBody}"></td>
-    <td th:text="${quizRequest.status}"></td>
-    <td th:text="${quizRequest.createdAt}"></td>
-    <td th:text="${quizRequest.updatedAt}"></td>
-    <td>
-      <form id="approve-form">
-        <input type="hidden" name="quizRequestId" th:value="${quizRequest.id}"/>
-        <button type="button" onclick="approveQuizRequest()">승인</button>
-      </form>
-      <form id="reject-form">
-        <input type="hidden" name="quizRequestId" th:value="${quizRequest.id}"/>
-        <button type="button" onclick="rejectQuizRequest()">거절</button>
-      </form>
-    </td>
-  </tr>
-  </tbody>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Request Body</th>
+        <th>Status</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th>Actions</th> <!-- 새로 추가된 열 -->
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="quizRequest : ${quizRequests}">
+        <td th:text="${quizRequest.id}"></td>
+        <td th:text="${quizRequest.requestBody}"></td>
+        <td th:text="${quizRequest.status}"></td>
+        <td th:text="${quizRequest.createdAt}"></td>
+        <td th:text="${quizRequest.updatedAt}"></td>
+        <td>
+            <form id="approve-form">
+                <input type="hidden" name="quizRequestId" th:value="${quizRequest.id}"/>
+                <button type="button" onclick="approveQuizRequest()">승인</button>
+            </form>
+            <form id="reject-form">
+                <input type="hidden" name="quizRequestId" th:value="${quizRequest.id}"/>
+                <button type="button" onclick="rejectQuizRequest()">거절</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
 </table>
 
 <script>
-  function approveQuizRequest() {
-    const quizRequestId = document.querySelector('input[name="quizRequestId"]').value;
-    const url = `/quiz-requests/${quizRequestId}/approve`;
+    function approveQuizRequest() {
+        const quizRequestId = document.querySelector('input[name="quizRequestId"]').value;
+        const url = `/quizzes/status/pending/${quizRequestId}/approve`;
 
-    fetch(url, {
-      method: 'PUT'
-    })
+        fetch(url, {
+            method: 'PUT'
+        })
             .then(response => {
-              if (response.ok) {
-                // 성공적으로 승인된 경우 처리
-                console.log('Quiz request approved successfully');
-              } else {
-                // 에러 처리
-                console.error('Failed to approve quiz request');
-              }
-              location.reload(true);
+                if (response.ok) {
+                    // 성공적으로 승인된 경우 처리
+                    console.log('Quiz request approved successfully');
+                } else {
+                    // 에러 처리
+                    console.error('Failed to approve quiz request');
+                }
+                location.reload(true);
             })
             .catch(error => {
-              console.error('Error:', error);
+                console.error('Error:', error);
             });
-  }
+    }
 
-  function rejectQuizRequest() {
-    const quizRequestId = document.querySelector('input[name="quizRequestId"]').value;
-    const url = `/quiz-requests/${quizRequestId}/reject`;
+    function rejectQuizRequest() {
+        const quizRequestId = document.querySelector('input[name="quizRequestId"]').value;
+        const url = `/quizzes/status/pending/${quizRequestId}/reject`;
 
-    fetch(url, {
-      method: 'PUT'
-    })
+        fetch(url, {
+            method: 'PUT'
+        })
             .then(response => {
-              if (response.ok) {
-                // 성공적으로 승인된 경우 처리
-                alert('퀴즈가 성공적으로 업로드되었습니다.');
-              } else {
-                // 에러 처리
-                alert('퀴즈 생성 요청을 거절했습니다.');
-              }
-              location.reload(true);
+                if (response.ok) {
+                    // 성공적으로 승인된 경우 처리
+                    alert('퀴즈가 성공적으로 업로드되었습니다.');
+                } else {
+                    // 에러 처리
+                    alert('퀴즈 생성 요청을 거절했습니다.');
+                }
+                location.reload(true);
             })
             .catch(error => {
-              console.error('Error:', error);
+                console.error('Error:', error);
             });
-  }
+    }
 </script>
 
 <!--Footer 영역을 참조합니다.-->

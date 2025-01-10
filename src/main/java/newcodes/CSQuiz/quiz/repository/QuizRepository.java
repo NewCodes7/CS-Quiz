@@ -6,14 +6,17 @@ import java.util.Optional;
 import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
 import newcodes.CSQuiz.quiz.domain.Answer;
 import newcodes.CSQuiz.quiz.domain.Quiz;
-import newcodes.CSQuiz.quiz.dto.QuizViewDTO;
+import newcodes.CSQuiz.quiz.dto.QuizViewDto;
+import newcodes.CSQuiz.quiz.dto.create.QuizCreateDto;
 
 public interface QuizRepository {
-    Quiz save(Quiz quiz, Map<Answer, List<AlternativeAnswer>> answers);
-    List<QuizViewDTO> findQuizzes(int userId, String kw, List<String> categories, List<String> statuses);
-    List<Quiz> findAll();
-    Optional<Quiz> findById(int id);
+    Quiz saveQuizAndAnswers(QuizCreateDto quizCreateDto);
+
+    List<QuizViewDto> findQuizzes(int userId, String kw, List<String> categories, List<String> statuses);
+
+    Optional<Quiz> findQuizById(int id);
+
     Map<Answer, List<AlternativeAnswer>> findAnswersById(int id);
-    void delete(int id);
-    Quiz update(Quiz quiz, Map<Answer, List<AlternativeAnswer>> answers);
+
+    void deleteQuizById(int id);
 }

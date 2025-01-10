@@ -40,22 +40,26 @@
                     </table>
                     <div class="card">
                         <div class="card-body">
-                            <p id="blankSentence" style="white-space:pre-wrap; letter-spacing: 0.02em; font-size: 1.1rem"></p>
+                            <p id="blankSentence"
+                               style="white-space:pre-wrap; letter-spacing: 0.02em; font-size: 1.1rem"></p>
                         </div>
                     </div>
                     <div class="my-4"></div>
-                    <form id="answerForm" th:action="@{'/quizzes/${quiz.quizId}'}" method="POST" onsubmit="submitForm(event)">
-                        <input type="hidden" name="quizId" th:value="${quiz.quizId}" />
+                    <form id="answerForm" th:action="@{/quizzes/{id}(id=${quiz.quizId})}"
+                          onsubmit="submitForm(event)">
+                        <input type="hidden" name="quizId" th:value="${quiz.quizId}"/>
                         <div th:each="count : ${#numbers.sequence(0, quiz.answerCounts - 1)}">
                             <div class="form-group">
-                                <input type="text" th:name="'userAnswers[' + ${count} + ']'" class="form-control" th:placeholder="${count} + 1 + '번째 정답을 입력하세요!'" />
+                                <input type="text" th:name="'userAnswers[' + ${count} + '].userAnswer'"
+                                       class="form-control" th:placeholder="${count} + 1 + '번째 정답을 입력하세요!'"/>
                             </div>
                         </div>
                         <div class="my-3 text-center" th:if="${loggedIn}">
                             <button type="submit" class="btn btn-primary btn-block px-5">제출</button>
                         </div>
                         <div class="my-3 text-center" th:unless="${loggedIn}">
-                            <button type="button" class="btn btn-secondary" onclick="location.href='/login'">로그인</button>
+                            <button type="button" class="btn btn-secondary" onclick="location.href='/login'">로그인
+                            </button>
                         </div>
                     </form>
                 </section>
@@ -81,12 +85,13 @@
     </div>
 </div>
 
+<script type="text/javascript" th:src="@{/js/answer.js}"></script>
 <script th:inline="javascript">
     var blankSentence = /*[[${quiz.blankSentence}]]*/ '';
     let blankIndex = 0;
 
     function replaceBlanks() {
-        var modifiedSentence = blankSentence.replace(/\{\}/g, function(match, offset) {
+        var modifiedSentence = blankSentence.replace(/\{\}/g, function (match, offset) {
             blankIndex++;
             return '<span class="bg-warning bg-gradient border rounded px-1" style="color: gray;">  ' + blankIndex + '  </span>'
         });
@@ -97,29 +102,6 @@
     replaceBlanks();
 </script>
 
-<script>
-    function submitForm(event) {
-        event.preventDefault(); // 기본 동작 방지
-        const formData = new FormData(event.target); // 이벤트 타겟의 폼 데이터 가져오기
-
-        var url = "/quizzes/" + formData.get('quizId'); // 퀴즈 ID 가져오기
-
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: formData,
-            processData: false, // 데이터 처리 방지
-            contentType: false, // 콘텐츠 타입 false로 설정
-        })
-            .done(function (fragment) {
-                $('#answerResult').replaceWith(fragment);
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                // 오류가 발생한 경우 오류 메시지를 콘솔에 출력
-                console.error("AJAX Error:", textStatus, errorThrown);
-            });
-    }
-</script>
 <!--Footer 영역을 참조합니다.-->
 <footer class="mt-5" th:replace="~{common/fragments/footer :: FooterFragment}"></footer>
 <!-- 공통 스크립트-->

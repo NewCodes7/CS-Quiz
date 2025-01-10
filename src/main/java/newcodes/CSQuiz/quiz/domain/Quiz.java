@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Builder
 public class Quiz {
-
     private Integer quizId;
     private Integer categoryId;
     private String questionText;
@@ -22,7 +21,8 @@ public class Quiz {
     private int answerCounts;
 
     // FIXME: 매개변수 리팩토링 필요
-    public void update(int categoryId, String questionText, String difficulty, String referenceUrl, String blankSentence) {
+    public void update(int categoryId, String questionText, String difficulty, String referenceUrl,
+                       String blankSentence) {
         this.categoryId = categoryId;
         this.questionText = questionText;
         this.difficulty = difficulty;

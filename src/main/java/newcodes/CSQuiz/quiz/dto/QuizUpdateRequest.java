@@ -2,10 +2,11 @@ package newcodes.CSQuiz.quiz.dto;
 
 import java.util.List;
 import lombok.Getter;
-import newcodes.CSQuiz.answer.dto.AnswerDTO;
+import newcodes.CSQuiz.quiz.dto.create.QuizDto;
+import newcodes.CSQuiz.quiz.dto.create.correctAndAlternativeAnswerDto;
 
 @Getter
 public class QuizUpdateRequest {
-    private QuizDTO quiz;
-    private List<AnswerDTO> answers;
+    private QuizDto quiz;
+    private List<correctAndAlternativeAnswerDto> answers;
 }

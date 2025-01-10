@@ -2,18 +2,18 @@ package newcodes.CSQuiz.quiz.repository;
 
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
+import newcodes.CSQuiz.common.Category;
 import newcodes.CSQuiz.quiz.domain.AlternativeAnswer;
 import newcodes.CSQuiz.quiz.domain.Answer;
-import newcodes.CSQuiz.global.Category;
 import newcodes.CSQuiz.quiz.domain.Quiz;
-import newcodes.CSQuiz.quiz.dto.QuizViewDTO;
+import newcodes.CSQuiz.quiz.dto.QuizViewDto;
+import newcodes.CSQuiz.quiz.dto.create.QuizCreateDto;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -32,15 +32,24 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @Override
-    public Quiz save(Quiz quiz, Map<Answer, List<AlternativeAnswer>> answers) {
-        // quiz 저장
-        String quizzesSql = "INSERT INTO quizzes (category_id, question_text, difficulty, reference_url, attempt_count, correct_count, blank_sentence) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    @Transactional
+    public Quiz saveQuizAndAnswers(QuizCreateDto quizCreateDto) {
+        Quiz quiz = quizCreateDto.getQuiz().toEntity();
+        Map<Answer, List<AlternativeAnswer>> correctAndAlternativeAnswers = quizCreateDto.getAnswerMap();
+
+        saveQuiz(quiz);
+        saveAnswers(quiz.getQuizId(), correctAndAlternativeAnswers);
+
+        return quiz;
+    }
+
+    private void saveQuiz(Quiz quiz) {
+        String sql = "INSERT INTO quizzes (category_id, question_text, difficulty, reference_url, attempt_count, correct_count, blank_sentence) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement pstmt = connection.prepareStatement(quizzesSql, new String[]{"quiz_id"});
+            PreparedStatement pstmt = connection.prepareStatement(sql, new String[]{"quiz_id"});
             pstmt.setInt(1, quiz.getCategoryId());
             pstmt.setString(2, quiz.getQuestionText());
             pstmt.setString(3, quiz.getDifficulty());
@@ -48,44 +57,52 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
             pstmt.setInt(5, ZERO_INITIALIZER);
             pstmt.setInt(6, ZERO_INITIALIZER);
             pstmt.setString(7, quiz.getBlankSentence());
-
             return pstmt;
         }, keyHolder);
 
         quiz.setQuizId(keyHolder.getKey().intValue());
+    }
 
-        // answer 저장
+    private void saveAnswers(int quizId, Map<Answer, List<AlternativeAnswer>> correctAndAlternativeAnswers) {
         String answerSql = "INSERT INTO answers (quiz_id, answer_text) VALUES (?, ?)";
-        String alternativeAnswerSql = "INSERT INTO alternative_answers (answer_id, alternative_text) VALUES (?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        for (Answer answer : answers.keySet()) {
+        for (Answer correctAnswer : correctAndAlternativeAnswers.keySet()) {
+            // 정답 저장
             jdbcTemplate.update(connection -> {
                 PreparedStatement pstmt = connection.prepareStatement(answerSql, new String[]{"answer_id"});
-                pstmt.setInt(1, quiz.getQuizId());
-                pstmt.setString(2, answer.getAnswerText());
+                pstmt.setInt(1, quizId);
+                pstmt.setString(2, correctAnswer.getAnswerText());
                 return pstmt;
             }, keyHolder);
 
-            int answerId = keyHolder.getKey().intValue();
-
-            // 대안 답 저장
-            for (AlternativeAnswer alternativeAnswer : answers.get(answer)) {
-                jdbcTemplate.update(connection -> {
-                    PreparedStatement pstmt = connection.prepareStatement(alternativeAnswerSql, new String[]{"alternative_id"});
-                    pstmt.setInt(1, answerId);
-                    pstmt.setString(2, alternativeAnswer.getAlternativeText());
-                    return pstmt;
-                }, keyHolder);
-            }
+            // 대체 답안 저장
+            int correctAnswerId = keyHolder.getKey().intValue();
+            saveAlternativeAnswers(correctAndAlternativeAnswers, correctAnswer, correctAnswerId);
         }
+    }
 
-        return quiz;
+    private void saveAlternativeAnswers(Map<Answer, List<AlternativeAnswer>> correctAndAlternativeAnswers,
+                                        Answer correctAnswer,
+                                        int correctAnswerId) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        String alternativeAnswerSql = "INSERT INTO alternative_answers (answer_id, alternative_text) VALUES (?, ?)";
+
+        for (AlternativeAnswer alternativeAnswer : correctAndAlternativeAnswers.get(correctAnswer)) {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement pstmt = connection.prepareStatement(alternativeAnswerSql,
+                        new String[]{"alternative_id"});
+                pstmt.setInt(1, correctAnswerId);
+                pstmt.setString(2, alternativeAnswer.getAlternativeText());
+                return pstmt;
+            }, keyHolder);
+        }
     }
 
     /*
-    * 옵션: 페이징(LIMIT), 키워드(WHERE), 카테고리(WHERE), (풀이 여부)
-    */
-    public List<QuizViewDTO> findQuizzes(int userId, String kw, List<String> categories, List<String> statuses) {
+     * 옵션: 페이징(LIMIT), 키워드(WHERE), 카테고리(WHERE), (풀이 여부)
+     */
+    public List<QuizViewDto> findQuizzes(int userId, String kw, List<String> categories, List<String> statuses) {
         String sql = "SELECT q.*, "
                 + "(CASE "
                 + "WHEN SUM(CASE WHEN s.correct = 1 THEN 1 ELSE 0 END) > 0 THEN true "
@@ -100,7 +117,6 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
             sql += "WHERE q.category_id IN (";
             String categorySql = categories.stream()
                     .map(c -> {
-                        System.out.println(c);
                         return Integer.toString(Category.valueOf(c).getId());
                     })
                     .collect(Collectors.joining(","));
@@ -132,25 +148,15 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         return jdbcTemplate.query(sql, params.toArray(), quizDtoRowMapper());
     }
 
-
-    @Override
-    public List<Quiz> findAll() {
-        String sql = "SELECT * FROM quizzes";
-
-        return jdbcTemplate.query(sql, quizRowMapper());
-    }
-
-    @Override
-    public Optional<Quiz> findById(int id) {
+    public Optional<Quiz> findQuizById(int id) {
         String sql = "SELECT * FROM quizzes where quiz_id = ?";
         List<Quiz> result = jdbcTemplate.query(sql, quizRowMapper(), id);
 
         return result.stream().findAny();
     }
 
-    @Override
+    @Transactional
     public Map<Answer, List<AlternativeAnswer>> findAnswersById(int quizId) {
-
         // answer 쿼리
         String answerSql = "SELECT * FROM answers where quiz_id = ?";
         List<Answer> result = jdbcTemplate.query(answerSql, answerRowMapper(), quizId);
@@ -161,77 +167,32 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         Map<Answer, List<AlternativeAnswer>> answers = new HashMap<>();
         for (Answer answer : result) {
             int answerId = answer.getAnswerId();
-            List<AlternativeAnswer> alternativeAnswers = jdbcTemplate.query(alternativeAnswerSql, alternativeAnswerRowMapper(), answerId);
+            List<AlternativeAnswer> alternativeAnswers = jdbcTemplate.query(alternativeAnswerSql,
+                    alternativeAnswerRowMapper(), answerId);
             answers.put(answer, alternativeAnswers);
         }
 
         return answers;
     }
 
-    @Override
-    public void delete(int id) {
-        String sql = "DELETE FROM alternative_answers where answer_id = ?";
-        jdbcTemplate.update(sql, id);
+    @Transactional
+    public void deleteQuizById(int quizId) {
+        // 1. 먼저 답변의 대체 답안들을 삭제
+        String sql = "DELETE FROM alternative_answers WHERE answer_id IN " +
+                "(SELECT answer_id FROM answers WHERE quiz_id = ?)";
+        jdbcTemplate.update(sql, quizId);
 
-        sql = "DELETE FROM answers where quiz_id = ?";
-        jdbcTemplate.update(sql, id);
+        // 2. 퀴즈에 연결된 답변들 삭제
+        sql = "DELETE FROM answers WHERE quiz_id = ?";
+        jdbcTemplate.update(sql, quizId);
 
-        sql = "DELETE FROM submissions where quiz_id = ?";
-        jdbcTemplate.update(sql, id);
+        // 3. 퀴즈에 대한 제출 기록 삭제
+        sql = "DELETE FROM submissions WHERE quiz_id = ?";
+        jdbcTemplate.update(sql, quizId);
 
-        sql = "DELETE FROM quizzes where quiz_id = ?";
-        jdbcTemplate.update(sql, id);
-    }
-
-    @Override
-    public Quiz update(Quiz quiz, Map<Answer, List<AlternativeAnswer>> answers) {
-        // quiz 저장
-        String quizzesSql = "INSERT INTO quizzes (category_id, question_text, difficulty, reference_url, attempt_count, correct_count, blank_sentence) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement pstmt = connection.prepareStatement(quizzesSql, new String[]{"quiz_id"});
-            pstmt.setInt(1, quiz.getCategoryId());
-            pstmt.setString(2, quiz.getQuestionText());
-            pstmt.setString(3, quiz.getDifficulty());
-            pstmt.setString(4, quiz.getReferenceUrl());
-            pstmt.setInt(5, ZERO_INITIALIZER);
-            pstmt.setInt(6, ZERO_INITIALIZER);
-            pstmt.setString(7, quiz.getBlankSentence());
-
-            return pstmt;
-        }, keyHolder);
-
-        int quizId = keyHolder.getKey().intValue();
-        quiz.setQuizId(quizId);
-
-        // answer 저장
-        String answerSql = "INSERT INTO answers (quiz_id, answer_text) VALUES (?, ?)";
-        String alternativeAnswerSql = "INSERT INTO alternative_answers (answer_id, alternative_text) VALUES (?, ?)";
-
-        for (Answer answer : answers.keySet()) {
-            jdbcTemplate.update(connection -> {
-                PreparedStatement pstmt = connection.prepareStatement(answerSql, new String[]{"answer_id"});
-                pstmt.setInt(1, quiz.getQuizId());
-                pstmt.setString(2, answer.getAnswerText());
-                return pstmt;
-            }, keyHolder);
-
-            int answerId = keyHolder.getKey().intValue();
-
-            // 대안 답 저장
-            for (AlternativeAnswer alternativeAnswer : answers.get(answer)) {
-                jdbcTemplate.update(connection -> {
-                    PreparedStatement pstmt = connection.prepareStatement(alternativeAnswerSql, new String[]{"alternative_id"});
-                    pstmt.setInt(1, answerId);
-                    pstmt.setString(2, alternativeAnswer.getAlternativeText());
-                    return pstmt;
-                }, keyHolder);
-            }
-        }
-
-        return quiz;
+        // 4. 마지막으로 퀴즈 자체를 삭제
+        sql = "DELETE FROM quizzes WHERE quiz_id = ?";
+        jdbcTemplate.update(sql, quizId);
     }
 
     private RowMapper<Quiz> quizRowMapper() {
@@ -248,7 +209,7 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
         };
     }
 
-    private RowMapper<QuizViewDTO> quizDtoRowMapper() {
+    private RowMapper<QuizViewDto> quizDtoRowMapper() {
         return (rs, rowNum) -> {
             Quiz quiz = Quiz.builder()
                     .quizId(rs.getInt("quiz_id"))
@@ -259,7 +220,7 @@ public class JdbcTemplateQuizRepository implements QuizRepository {
                     .blankSentence(rs.getString("blank_sentence"))
                     .build();
 
-            QuizViewDTO quizViewDTO = new QuizViewDTO(quiz);
+            QuizViewDto quizViewDTO = new QuizViewDto(quiz);
             quizViewDTO.setIsCorrect(rs.getBoolean("solved"));
 
             return quizViewDTO;

@@ -1,6 +1,6 @@
 package newcodes.CSQuiz.quiz.domain;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
+@AllArgsConstructor
 public class Answer {
     private Integer answerId;
     private Integer quizId;
